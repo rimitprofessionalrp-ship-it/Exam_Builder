@@ -38,7 +38,7 @@
           </div>
           <div>
             <label class="block font-bold mb-1 text-sm">পরীক্ষা শেষের সময় (Optional)</label>
-            <input type="datetime-local" id="config-end" class="w-full p-2 border rounded">
+            <input type="datetime-local" id="config-end" class="w-full p-2 border rounded" value="2026-08-24T22:35">
           </div>
           <div>
             <label class="block font-bold mb-1 text-sm">পরীক্ষার সময় (মিনিটে)</label>
@@ -46,7 +46,7 @@
           </div>
           <div>
             <label class="block font-bold mb-1 text-sm">Exam ID (প্রত্যেক পরীক্ষার জন্য আলাদা নাম দিন)</label>
-            <input type="text" id="config-id" class="w-full p-2 border rounded bg-white" value="physics-periodic-motion-v2">
+            <input type="text" id="config-id" class="w-full p-2 border rounded bg-white" value="physics-periodic-motion-v3">
           </div>
           <div class="md:col-span-2">
             <label class="block font-bold mb-1 text-sm text-emerald-700">Made by (আপনার নাম)</label>
@@ -171,7 +171,7 @@
             currentUser = cred.user;
             showScreen('profileSetupScreen');
           } catch (err) {
-            console.error("Auth Error (Silent):", err);
+            console.error("Auth Error:", err);
             showScreen('profileSetupScreen');
           }
         }
@@ -199,7 +199,7 @@
         try {
           const draftRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'data', 'draft_answers');
           await setDoc(draftRef, { answers: userAnswers }, { merge: true });
-        } catch (e) { console.error("Draft save error", e); }
+        } catch (e) {}
       }
     }
 
@@ -220,18 +220,27 @@
       } catch (e) { showScreen('profileSetupScreen'); }
     }
 
-    const examStartTime = new Date("__START_TIME__").getTime();
+    // Time Control Variables
+    const startStr = "__START_TIME__";
+    const endStr = "__END_TIME_TIMESTAMP__";
+    const examStartTime = startStr ? new Date(startStr).getTime() : 0;
+    const examEndTime = endStr ? new Date(endStr).getTime() : null;
 
-    function isExamTimeStarted() {
-      if (Date.now() < examStartTime) {
+    function isExamTimeValid() {
+      const now = Date.now();
+      if (examStartTime && now < examStartTime) {
         showModal("পরীক্ষা এখনো শুরু হয়নি। নির্ধারিত সময়ে শুরু হবে, অনুগ্রহ করে অপেক্ষা করুন!");
+        return false;
+      }
+      if (examEndTime && now > examEndTime) {
+        showModal("পরীক্ষার নির্ধারিত সময় শেষ হয়ে গেছে! আপনি আর অংশগ্রহণ করতে পারবেন না।");
         return false;
       }
       return true;
     }
 
     window.submitProfileAndStart = async function() {
-      if (!isExamTimeStarted()) return;
+      if (!isExamTimeValid()) return;
       const name = document.getElementById('studentNameInput').value.trim();
       const college = document.getElementById('collegeNameInput').value.trim();
       if (!name || !college) {
@@ -247,6 +256,8 @@
     };
 
     async function startExam() {
+      if (!isExamTimeValid()) return;
+      
       warningCount = 0;
       userAnswers = {};
 
@@ -273,7 +284,17 @@
       }
 
       const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-      totalSeconds = examDuration - elapsedTime;
+      let remainingDuration = examDuration - elapsedTime;
+
+      // Force submit if absolute end time is near
+      if (examEndTime) {
+        const secondsUntilAbsoluteEnd = Math.floor((examEndTime - Date.now()) / 1000);
+        if (secondsUntilAbsoluteEnd < remainingDuration) {
+          remainingDuration = secondsUntilAbsoluteEnd;
+        }
+      }
+
+      totalSeconds = remainingDuration;
 
       if (totalSeconds <= 0) {
         await autoSubmitFromDraft();
@@ -362,7 +383,7 @@
           await setDoc(examRef, { score: score, timestamp: serverTimestamp(), terminated: isTerminated }, { merge: true });
           const lbRef = doc(db, 'artifacts', appId, 'public', 'data', 'leaderboard', currentUser.uid);
           await setDoc(lbRef, { uid: currentUser.uid, name: userProfile.name, college: userProfile.college, score: score, timestamp: serverTimestamp() });
-        } catch(err) { console.error(err); }
+        } catch(err) {}
       }
       showResultPage(score);
     };
@@ -420,7 +441,7 @@
           tbody.appendChild(tr);
         });
         document.getElementById('userRankVal').innerText = myRank !== '-' ? `#${myRank}` : '-';
-      }, (error) => { console.error(error); });
+      }, (error) => {});
     }
 
     function renderAnswerReview() {
@@ -604,20 +625,20 @@
             
             <div class="mb-4">
               <label class="block text-sm font-bold mb-1">প্রশ্ন (Math হলে $ $ ব্যবহার করুন)</label>
-              <textarea rows="2" class="w-full p-2 border rounded" onchange="updateQuestion(${index}, 'text', this.value)">${q.text}</textarea>
+              <textarea rows="2" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" onchange="updateQuestion(${index}, 'text', this.value)">${q.text}</textarea>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-              <div><label class="block text-xs font-bold mb-1">অপশন (ক)</label><input type="text" class="w-full p-2 border rounded" value="${q.optA}" onchange="updateQuestion(${index}, 'optA', this.value)"></div>
-              <div><label class="block text-xs font-bold mb-1">অপশন (খ)</label><input type="text" class="w-full p-2 border rounded" value="${q.optB}" onchange="updateQuestion(${index}, 'optB', this.value)"></div>
-              <div><label class="block text-xs font-bold mb-1">অপশন (গ)</label><input type="text" class="w-full p-2 border rounded" value="${q.optC}" onchange="updateQuestion(${index}, 'optC', this.value)"></div>
-              <div><label class="block text-xs font-bold mb-1">অপশন (ঘ)</label><input type="text" class="w-full p-2 border rounded" value="${q.optD}" onchange="updateQuestion(${index}, 'optD', this.value)"></div>
+              <div><label class="block text-xs font-bold mb-1">অপশন (ক)</label><input type="text" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" value="${q.optA}" onchange="updateQuestion(${index}, 'optA', this.value)"></div>
+              <div><label class="block text-xs font-bold mb-1">অপশন (খ)</label><input type="text" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" value="${q.optB}" onchange="updateQuestion(${index}, 'optB', this.value)"></div>
+              <div><label class="block text-xs font-bold mb-1">অপশন (গ)</label><input type="text" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" value="${q.optC}" onchange="updateQuestion(${index}, 'optC', this.value)"></div>
+              <div><label class="block text-xs font-bold mb-1">অপশন (ঘ)</label><input type="text" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" value="${q.optD}" onchange="updateQuestion(${index}, 'optD', this.value)"></div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label class="block text-sm font-bold text-emerald-700 mb-1">সঠিক উত্তর</label>
-                <select class="w-full p-2 border-2 border-emerald-300 rounded font-bold" onchange="updateQuestion(${index}, 'correct', this.value)">
+                <select class="w-full p-2 border-2 border-emerald-300 rounded font-bold outline-none" onchange="updateQuestion(${index}, 'correct', this.value)">
                   <option value="A" ${q.correct === 'A' ? 'selected' : ''}>অপশন (ক)</option>
                   <option value="B" ${q.correct === 'B' ? 'selected' : ''}>অপশন (খ)</option>
                   <option value="C" ${q.correct === 'C' ? 'selected' : ''}>অপশন (গ)</option>
@@ -626,7 +647,7 @@
               </div>
               <div class="md:col-span-2">
                 <label class="block text-sm font-bold text-blue-700 mb-1">ব্যাখ্যা (Optional)</label>
-                <textarea rows="1" class="w-full p-2 border rounded text-sm" onchange="updateQuestion(${index}, 'explanation', this.value)">${q.explanation}</textarea>
+                <textarea rows="1" class="w-full p-2 border rounded text-sm outline-none focus:ring-1 focus:ring-blue-500" onchange="updateQuestion(${index}, 'explanation', this.value)">${q.explanation}</textarea>
               </div>
             </div>
           </div>
@@ -678,10 +699,15 @@
         `;
       });
 
-      const endTimeVal = document.getElementById('config-end').value;
+      const startVal = document.getElementById('config-start').value;
+      const endVal = document.getElementById('config-end').value;
+
+      const startTimestampString = startVal ? startVal + ":00+06:00" : "";
+      const endTimestampString = endVal ? endVal + ":00+06:00" : "";
+      
       let endTimeHTML = "";
-      if (endTimeVal) {
-         endTimeHTML = `<div class="exam-end-time">⏳ পরীক্ষা শেষের সময়: ${endTimeVal.replace('T', ' - ')}</div>`;
+      if (endVal) {
+         endTimeHTML = `<div class="exam-end-time">⏳ পরীক্ষা শেষের সময়: ${endVal.replace('T', ' - ')}</div>`;
       }
 
       let finalHtml = document.getElementById('rawTemplate').value;
@@ -689,7 +715,10 @@
       finalHtml = finalHtml.replace(/__PAGE_TITLE__/g, document.getElementById('config-title').value);
       finalHtml = finalHtml.replace(/__PAGE_SUBTITLE__/g, document.getElementById('config-subtitle').value);
       finalHtml = finalHtml.replace(/__DURATION_SEC__/g, document.getElementById('config-duration').value * 60);
-      finalHtml = finalHtml.replace(/__START_TIME__/g, document.getElementById('config-start').value + ":00+06:00");
+      
+      finalHtml = finalHtml.replace(/__START_TIME__/g, startTimestampString);
+      finalHtml = finalHtml.replace(/__END_TIME_TIMESTAMP__/g, endTimestampString);
+      
       finalHtml = finalHtml.replace(/__END_TIME_HTML__/g, endTimeHTML);
       finalHtml = finalHtml.replace(/__AUTHOR_NAME__/g, document.getElementById('config-author').value || "Unknown");
       finalHtml = finalHtml.replace(/__TOTAL_QS__/g, questions.length);
@@ -712,7 +741,6 @@
       setTimeout(() => { document.getElementById('copyBtn').innerText = "কোড কপি করুন"; }, 2500);
     }
 
-    // Initialize first render
     renderQuestions();
   </script>
 </body>
