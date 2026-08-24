@@ -51,7 +51,7 @@
           <div class="md:col-span-2">
             <label class="block font-bold mb-1 text-sm text-emerald-700">Made by (আপনার নাম)</label>
             <input type="text" id="config-author" class="w-full p-2 border border-emerald-300 rounded font-bold" value="Rimit">
-            <p class="text-xs text-slate-500 mt-1">* Developed by RIMIT ফিক্সড থাকবে, কিন্তু Made by তে আপনার নাম দিতে পারবেন।</p>
+            <p class="text-xs text-slate-500 mt-1">*Made by তে আপনার নাম দিতে পারবেন।</p>
           </div>
         </div>
       </div>
@@ -160,6 +160,30 @@
       document.getElementById('customModal').style.display = 'none';
     };
 
+    // ইন্টারনেট থেকে প্রমানিত সঠিক সময় নেওয়ার সুরক্ষিত ফাংশন
+    async function getRealServerTime() {
+      try {
+        const res = await fetch('https://worldtimeapi.org/api/timezone/Asia/Dhaka');
+        if (!res.ok) throw new Error("WorldTimeAPI error");
+        const data = await res.json();
+        return new Date(data.datetime).getTime();
+      } catch (e) {
+        try {
+          if (currentUser) {
+            const timeRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'data', 'time_check');
+            await setDoc(timeRef, { lastCheck: serverTimestamp() }, { merge: true });
+            const timeSnap = await getDoc(timeRef);
+            if (timeSnap.exists() && timeSnap.data().lastCheck) {
+              return timeSnap.data().lastCheck.toDate().getTime();
+            }
+          }
+        } catch (fbErr) {
+          console.error("Firebase server time fetch error:", fbErr);
+        }
+        return null;
+      }
+    }
+  
     window.addEventListener('DOMContentLoaded', async () => {
       onAuthStateChanged(auth, async (user) => {
         if (user) {
@@ -260,6 +284,11 @@
       
       warningCount = 0;
       userAnswers = {};
+      const nowTime = await getRealServerTime();
+      if (!nowTime) {
+        showModal("⚠️ সঠিক সার্ভার সময় নিশ্চিত করা যায়নি! পরীক্ষা শুরু করা সম্ভব হচ্ছে না।");
+        return;
+      }
 
       const examRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'data', 'exam_status');
       const examSnap = await getDoc(examRef);
