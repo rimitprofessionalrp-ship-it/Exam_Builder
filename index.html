@@ -20,6 +20,13 @@
 
     <div class="p-6 md:p-8">
       
+      <!-- নতুন পরীক্ষা শুরু করার বাটন -->
+      <div class="flex justify-end mb-4">
+        <button onclick="clearDraft()" class="bg-red-50 text-red-600 border border-red-200 px-4 py-2 rounded-lg font-bold hover:bg-red-100 transition-colors shadow-sm flex items-center gap-2 text-sm">
+          <span class="text-base">🗑️</span> সব মুছে নতুন পরীক্ষা শুরু করুন
+        </button>
+      </div>
+
       <!-- সেটিংস -->
       <div class="mb-8 bg-slate-50 border border-slate-200 rounded-lg p-5">
         <h2 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4">১. পরীক্ষার সাধারণ তথ্য</h2>
@@ -711,7 +718,7 @@
     <div id="profileSetupScreen" class="screen-section">
       <div class="card">
         <h3 style="color: var(--blue-marker); margin-bottom: 8px;">পরীক্ষার্থীর তথ্য</h3>
-        <p style="margin-bottom: 15px; color: #64748b; font-size: 0.85rem;">লিডারবোর্ডের জন্য আপনার সঠিক নাম ও কলেজের নাম দিন।</p>
+        <p style="margin-bottom: 15px; color: #64748b; font-size: 0.85rem;">লিডারবোর্ডের জন্য আপনার সঠিক নাম ও কলেজের নাম দিন.</p>
         
         <!-- পরীক্ষা শুরু ও শেষ সময়সূচি -->
         __SCHEDULE_BOX_HTML__
@@ -780,15 +787,32 @@
 </html>
   </textarea>
 
-  <!-- Builder Logic -->
+  <!-- Builder Logic (Auto-Save Enabled) -->
   <script>
-    let questions = [
+    // LocalStorage থেকে প্রশ্ন লোড করা, না থাকলে ডিফল্ট প্রশ্ন রাখা
+    let questions = JSON.parse(localStorage.getItem('smart_exam_draft_questions')) || [
       {
         text: "সরল ছন্দিত স্পন্দনের সমীকরণ $\\frac{d^2x}{dt^2} + 16x = 0$ হলে কণাটির কৌণিক কম্পাঙ্ক কত?",
         optA: "$ 2\\text{ rad/s} $", optB: "$ 4\\text{ rad/s} $", optC: "$ 8\\text{ rad/s} $", optD: "$ 16\\text{ rad/s} $",
         correct: "B", explanation: "প্রমিত সমীকরণ $\\frac{d^2x}{dt^2} + \\omega^2 x = 0$ এর সাথে তুলনা করে পাই, $ \\omega^2 = 16 \\implies \\omega = 4\\text{ rad/s} $।"
       }
     ];
+
+    // যেকোনো পরিবর্তনের পর লোকাল স্টোরেজে সেভ করার ফাংশন
+    function saveQuestionsToLocalStorage() {
+      localStorage.setItem('smart_exam_draft_questions', JSON.stringify(questions));
+    }
+
+    // ড্রাফট ক্লিয়ার করার ফাংশন
+    function clearDraft() {
+      if (confirm("আপনি কি নিশ্চিত যে আগের সব প্রশ্ন মুছে ফেলে নতুন প্রশ্ন তৈরি করতে চান?")) {
+        localStorage.removeItem('smart_exam_draft_questions');
+        questions = [{
+          text: "", optA: "", optB: "", optC: "", optD: "", correct: "A", explanation: ""
+        }];
+        renderQuestions();
+      }
+    }
 
     const toBngNum = (numStr) => {
       const bngDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
@@ -807,14 +831,14 @@
             
             <div class="mb-4">
               <label class="block text-sm font-bold mb-1">প্রশ্ন (Math হলে $ $ ব্যবহার করুন)</label>
-              <textarea rows="2" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" onchange="updateQuestion(${index}, 'text', this.value)">${q.text}</textarea>
+              <textarea rows="2" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" oninput="updateQuestion(${index}, 'text', this.value)">${q.text}</textarea>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-              <div><label class="block text-xs font-bold mb-1">অপশন (ক)</label><input type="text" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" value="${q.optA}" onchange="updateQuestion(${index}, 'optA', this.value)"></div>
-              <div><label class="block text-xs font-bold mb-1">অপশন (খ)</label><input type="text" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" value="${q.optB}" onchange="updateQuestion(${index}, 'optB', this.value)"></div>
-              <div><label class="block text-xs font-bold mb-1">অপশন (গ)</label><input type="text" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" value="${q.optC}" onchange="updateQuestion(${index}, 'optC', this.value)"></div>
-              <div><label class="block text-xs font-bold mb-1">অপশন (ঘ)</label><input type="text" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" value="${q.optD}" onchange="updateQuestion(${index}, 'optD', this.value)"></div>
+              <div><label class="block text-xs font-bold mb-1">অপশন (ক)</label><input type="text" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" value="${q.optA}" oninput="updateQuestion(${index}, 'optA', this.value)"></div>
+              <div><label class="block text-xs font-bold mb-1">অপশন (খ)</label><input type="text" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" value="${q.optB}" oninput="updateQuestion(${index}, 'optB', this.value)"></div>
+              <div><label class="block text-xs font-bold mb-1">অপশন (গ)</label><input type="text" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" value="${q.optC}" oninput="updateQuestion(${index}, 'optC', this.value)"></div>
+              <div><label class="block text-xs font-bold mb-1">অপশন (ঘ)</label><input type="text" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" value="${q.optD}" oninput="updateQuestion(${index}, 'optD', this.value)"></div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -829,7 +853,7 @@
               </div>
               <div class="md:col-span-2">
                 <label class="block text-sm font-bold text-blue-700 mb-1">ব্যাখ্যা (Optional)</label>
-                <textarea rows="1" class="w-full p-2 border rounded text-sm outline-none focus:ring-1 focus:ring-blue-500" onchange="updateQuestion(${index}, 'explanation', this.value)">${q.explanation}</textarea>
+                <textarea rows="1" class="w-full p-2 border rounded text-sm outline-none focus:ring-1 focus:ring-blue-500" oninput="updateQuestion(${index}, 'explanation', this.value)">${q.explanation}</textarea>
               </div>
             </div>
           </div>
@@ -840,16 +864,19 @@
 
     function addQuestion() {
       questions.push({ text: "", optA: "", optB: "", optC: "", optD: "", correct: "A", explanation: "" });
+      saveQuestionsToLocalStorage();
       renderQuestions();
     }
 
     function removeQuestion(index) {
       questions.splice(index, 1);
+      saveQuestionsToLocalStorage();
       renderQuestions();
     }
 
     function updateQuestion(index, field, value) {
       questions[index][field] = value;
+      saveQuestionsToLocalStorage();
     }
 
     function generateCode() {
@@ -891,7 +918,6 @@
       const durationSec = durationVal * 60;
       const totalQs = questions.length;
 
-      // বাংলা তারিখ ও সময় ফরম্যাটের ফাংশন
       const formatBanglaDate = (dateTimeStr) => {
         if (!dateTimeStr) return "অনির্ধারিত";
         const date = new Date(dateTimeStr);
@@ -917,7 +943,6 @@
         return `${day} ${month} ${year}, ${period} ${bngHours}:${minutes} টা`;
       };
 
-      // ডাইনামিক শিডিউল বক্স তৈরি করা
       let scheduleHTML = `
         <div class="schedule-box">
           <div>📅 পরীক্ষার সময়সূচি:</div>
