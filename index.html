@@ -1,103 +1,455 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="bn" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Exam Builder 🚀</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>HSC Cloud Exam Builder 🚀</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+  
   <style>
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; }
+    :root {
+      --bg-main: #f1f5f9;
+      --bg-card: #ffffff;
+      --bg-subcard: #f8fafc;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary-color: #1e3a8a;
+      --btn-text: #ffffff;
+      --border-color: #e2e8f0;
+      --danger-color: #dc2626;
+      --danger-bg: #fef2f2;
+      --success-color: #16a34a;
+      --input-bg: #ffffff;
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    [data-theme="dark"] {
+      --bg-main: #0b1120;
+      --bg-card: #111827;
+      --bg-subcard: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary-color: #eab308;
+      --btn-text: #0f172a;
+      --border-color: #334155;
+      --danger-color: #ef4444;
+      --danger-bg: rgba(239, 68, 68, 0.15);
+      --success-color: #22c55e;
+      --input-bg: #0f172a;
+      --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: 'Hind Siliguri', sans-serif; 
+      background-color: var(--bg-main); 
+      color: var(--text-main); 
+      line-height: 1.6; 
+      padding: 15px 10px 60px 10px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .builder-wrapper {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* Top Header matching HSC Apex Tracker */
+    .top-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+    }
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-logo {
+      background: var(--primary-color);
+      color: var(--btn-text);
+      font-weight: 800;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+    }
+    .brand-title h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .brand-title p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    .theme-toggle {
+      background: var(--bg-subcard);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-family: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s;
+    }
+    .theme-toggle:hover {
+      border-color: var(--primary-color);
+    }
+
+    /* Main Panel */
+    .main-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .action-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .feature-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pill {
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: var(--bg-subcard);
+      border: 1px solid var(--border-color);
+      color: var(--primary-color);
+    }
+    .btn-clear {
+      background: var(--danger-bg);
+      color: var(--danger-color);
+      border: 1px solid var(--danger-color);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section-box {
+      background: var(--bg-subcard);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 28px;
+    }
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-main);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+      margin-bottom: 16px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+    .col-span-full {
+      grid-column: 1 / -1;
+    }
+    @media (max-width: 680px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    label.field-label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.88rem;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+    input.field-input, textarea.field-input, select.field-input {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+    input.field-input:focus, textarea.field-input:focus, select.field-input:focus {
+      border-color: var(--primary-color);
+    }
+
+    /* Question Item Card */
+    .q-builder-card {
+      background: var(--bg-subcard);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .q-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .q-number {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--primary-color);
+    }
+    .btn-delete-q {
+      background: var(--danger-bg);
+      color: var(--danger-color);
+      border: 1px solid var(--danger-color);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    .btn-add-q {
+      width: 100%;
+      padding: 14px;
+      border: 2px dashed var(--primary-color);
+      background: transparent;
+      color: var(--primary-color);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: 0.2s;
+    }
+    .btn-add-q:hover {
+      opacity: 0.85;
+    }
+
+    .generate-wrap {
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+      margin-top: 25px;
+    }
+    .btn-generate {
+      background: var(--primary-color);
+      color: var(--btn-text);
+      border: none;
+      padding: 14px 34px;
+      border-radius: 30px;
+      font-family: inherit;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s;
+    }
+    .btn-generate:hover {
+      transform: translateY(-2px);
+    }
+
+    /* Output Area */
+    .output-box {
+      margin-top: 30px;
+      display: none;
+    }
+    .output-header {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 14px 20px;
+      border-radius: 10px 10px 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #334155;
+      border-bottom: none;
+    }
+    .output-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .btn-copy {
+      background: #16a34a;
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-download {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .code-textarea {
+      width: 100%;
+      height: 320px;
+      background: #090d16;
+      color: #93c5fd;
+      padding: 16px;
+      font-family: monospace;
+      font-size: 0.88rem;
+      border: 1px solid #334155;
+      border-radius: 0 0 10px 10px;
+      outline: none;
+    }
   </style>
 </head>
-<body class="text-slate-800 pb-20">
+<body>
 
-  <div class="max-w-5xl mx-auto mt-8 bg-white rounded-xl shadow-lg overflow-hidden border border-slate-200">
-    <div class="bg-blue-900 text-white p-6 text-center">
-      <h1 class="text-3xl font-bold mb-2">✨ স্মার্ট এক্সাম বিল্ডার</h1>
-      <p class="text-blue-200">অফলাইন এক্সাম জেনারেটর (যেকোনো ম্যাথ ইকুয়েশন লিখতে $ $ বা $$ $$ ব্যবহার করুন)</p>
+  <div class="builder-wrapper">
+    <!-- Top Header -->
+    <div class="top-bar">
+      <div class="brand-box">
+        <div class="brand-logo">HSC</div>
+        <div class="brand-title">
+          <h1>⚡ HSC Cloud Exam Builder</h1>
+          <p>OMR Lock • Auto Shuffle • Server Time Sync • Time-Tiebreaker Leaderboard</p>
+        </div>
+      </div>
+      <button class="theme-toggle" onclick="toggleBuilderTheme()">🌓 Theme</button>
     </div>
 
-    <div class="p-6 md:p-8">
-      
-      <!-- নতুন পরীক্ষা শুরু করার বাটন -->
-      <div class="flex justify-end mb-4">
-        <button onclick="clearDraft()" class="bg-red-50 text-red-600 border border-red-200 px-4 py-2 rounded-lg font-bold hover:bg-red-100 transition-colors shadow-sm flex items-center gap-2 text-sm">
-          <span class="text-base">🗑️</span> সব মুছে নতুন পরীক্ষা শুরু করুন
+    <div class="main-card">
+      <!-- Feature Badges & Clear Button -->
+      <div class="action-row">
+        <div class="feature-pills">
+          <span class="pill">🔒 OMR লকড</span>
+          <span class="pill">🔀 অটো-শাফল</span>
+          <span class="pill">🕵️ অ্যান্টি-টাইম ট্যাম্পার</span>
+          <span class="pill">⏱️ টাইম-টাইব্রেকার</span>
+        </div>
+        <button onclick="clearDraft()" class="btn-clear">
+          🗑️ সব মুছে নতুন পরীক্ষা শুরু করুন
         </button>
       </div>
 
-      <!-- সেটিংস -->
-      <div class="mb-8 bg-slate-50 border border-slate-200 rounded-lg p-5">
-        <h2 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4">১. পরীক্ষার সাধারণ তথ্য</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="md:col-span-2">
-            <label class="block font-bold mb-1 text-sm">পরীক্ষার নাম (Title)</label>
-            <input type="text" id="config-title" class="w-full p-2 border rounded" value="⚡ এইচএসসি পদার্থবিজ্ঞান ২য় পত্র - তাপগতিবিদ্যা এমসিকিউ পরীক্ষা">
+      <!-- ১. পরীক্ষার সাধারণ তথ্য -->
+      <div class="section-box">
+        <h2 class="section-title">১. পরীক্ষার সাধারণ তথ্য ও সময়সূচি (ঢাকা টাইম +06:00)</h2>
+        <div class="grid-2">
+          <div class="col-span-full">
+            <label class="field-label">পরীক্ষার নাম (Title)</label>
+            <input type="text" id="config-title" class="field-input" value="এইচএসসি পদার্থবিজ্ঞান - তাপগতিবিদ্যা এমসিকিউ পরীক্ষা" oninput="saveConfigToLocalStorage()">
           </div>
-          <div class="md:col-span-2">
-            <label class="block font-bold mb-1 text-sm">সাবটাইটেল</label>
-            <input type="text" id="config-subtitle" class="w-full p-2 border rounded" value="৩০টি গুরুত্বপূর্ণ এমসিকিউ পরীক্ষা (৩০ মিনিট) ও লাইভ লিডারবোর্ড">
+          <div class="col-span-full">
+            <label class="field-label">সাবটাইটেল (Subtitle)</label>
+            <input type="text" id="config-subtitle" class="field-input" value="৩০টি গুরুত্বপূর্ণ বোর্ড ও ভর্তি পরীক্ষার প্রশ্ন (OMR লক ও অটো-শাফল যুক্ত)" oninput="saveConfigToLocalStorage()">
+          </div>
+          
+          <div>
+            <label class="field-label">🟢 লাইভ পরীক্ষা শুরুর সময় (EXAM_START_TIME)</label>
+            <input type="datetime-local" id="config-start" class="field-input" value="2026-10-15T12:00" oninput="saveConfigToLocalStorage()">
           </div>
           <div>
-            <label class="block font-bold mb-1 text-sm">পরীক্ষা শুরুর সময় (Start Time)</label>
-            <input type="datetime-local" id="config-start" class="w-full p-2 border rounded" value="2026-09-04T22:00">
+            <label class="field-label">🛑 লাইভ পরীক্ষা শেষের সময় (EXAM_END_TIME)</label>
+            <input type="datetime-local" id="config-end" class="field-input" value="2026-10-15T14:00" oninput="saveConfigToLocalStorage()">
+          </div>
+          
+          <div>
+            <label class="field-label">🔄 প্র্যাকটিস এক্সাম শুরুর সময় (PRACTICE_START_TIME)</label>
+            <input type="datetime-local" id="config-practice" class="field-input" value="2026-10-15T20:00" oninput="saveConfigToLocalStorage()">
           </div>
           <div>
-            <label class="block font-bold mb-1 text-sm">পরীক্ষা শেষের সময় (Optional)</label>
-            <input type="datetime-local" id="config-end" class="w-full p-2 border rounded" value="2026-09-04T23:00">
+            <label class="field-label">⏱️ পরীক্ষার সময়সীমা (মিনিটে)</label>
+            <input type="number" id="config-duration" class="field-input" value="25" oninput="saveConfigToLocalStorage()">
+          </div>
+
+          <div>
+            <label class="field-label">🔑 ফায়ারবেস Exam ID (প্রত্যেক পরীক্ষার জন্য ইউনিক নাম)</label>
+            <input type="text" id="config-id" class="field-input" value="thermo-exam-v1" oninput="saveConfigToLocalStorage()">
           </div>
           <div>
-            <label class="block font-bold mb-1 text-sm">পরীক্ষার সময় (মিনিটে)</label>
-            <input type="number" id="config-duration" class="w-full p-2 border rounded" value="30">
-          </div>
-          <div>
-            <label class="block font-bold mb-1 text-sm">Exam ID (প্রত্যেক পরীক্ষার জন্য আলাদা নাম দিন)</label>
-            <input type="text" id="config-id" class="w-full p-2 border rounded bg-white" value="physics-thermodynamics-mcq-v1">
-          </div>
-          <div class="md:col-span-2">
-            <label class="block font-bold mb-1 text-sm text-emerald-700">Made by (আপনার নাম)</label>
-            <input type="text" id="config-author" class="w-full p-2 border border-emerald-300 rounded font-bold" value="Rimit">
-            <p class="text-xs text-slate-500 mt-1">*Made by তে আপনার নাম দিতে পারবেন।</p>
+            <label class="field-label" style="color: var(--success-color);">✍️ Made by (আপনার নাম)</label>
+            <input type="text" id="config-author" class="field-input" value="Rimit" oninput="saveConfigToLocalStorage()">
           </div>
         </div>
       </div>
 
-      <!-- প্রশ্নসমূহ -->
-      <div class="mb-8">
-        <h2 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4">২. প্রশ্নপত্র (Questions)</h2>
-        <div id="questionsContainer" class="space-y-4"></div>
+      <!-- ২. প্রশ্নপত্র -->
+      <div>
+        <h2 class="section-title">২. প্রশ্নপত্র (ম্যাথ লিখতে $ $ বা \( \) এবং হাইলাইট করতে &lt;span class="highlight"&gt;...&lt;/span&gt; ব্যবহার করুন)</h2>
+        <div id="questionsContainer"></div>
         
-        <button onclick="addQuestion()" class="mt-4 w-full border-2 border-dashed border-blue-400 text-blue-600 bg-blue-50 py-3 rounded-lg font-bold hover:bg-blue-100 transition-colors">
+        <button onclick="addQuestion()" class="btn-add-q">
           + নতুন প্রশ্ন যোগ করুন
         </button>
       </div>
 
       <!-- জেনারেট বাটন -->
-      <div class="text-center pt-5 border-t">
-        <button onclick="generateCode()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full text-lg font-bold shadow-lg transition-transform transform hover:scale-105">
+      <div class="generate-wrap">
+        <button onclick="generateCode()" class="btn-generate">
           এইচটিএমএল (HTML) কোড তৈরি করুন 🚀
         </button>
       </div>
 
-      <!-- আউটপুট -->
-      <div id="outputArea" class="mt-8 hidden">
-        <div class="flex justify-between items-center mb-3 bg-slate-800 p-4 rounded-t-lg">
-          <h3 class="text-emerald-400 font-bold">সফলভাবে কোড তৈরি হয়েছে!</h3>
-          <button onclick="copyCode()" id="copyBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-1.5 rounded font-bold text-sm">
-            কোড কপি করুন
-          </button>
+      <!-- আউটপুট বক্স -->
+      <div id="outputArea" class="output-box">
+        <div class="output-header">
+          <span style="color: #4ade80; font-weight: 700;">✅ সফলভাবে কোড তৈরি হয়েছে!</span>
+          <div class="output-actions">
+            <button onclick="copyCode()" id="copyBtn" class="btn-copy">📋 কোড কপি করুন</button>
+            <button onclick="downloadHTML()" class="btn-download">📥 ডাউনলোড .HTML</button>
+          </div>
         </div>
-        <textarea id="generatedCode" readonly class="w-full h-80 bg-slate-900 text-blue-200 p-4 font-mono text-sm outline-none rounded-b-lg border border-slate-700"></textarea>
-        <p class="text-slate-500 text-sm mt-2 text-center font-bold">ওপরের কোডটি কপি করে আপনার ফাইনাল .html ফাইলে সেভ করুন।</p>
+        <textarea id="generatedCode" readonly class="code-textarea"></textarea>
+        <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-top: 8px; font-weight: 600;">
+          ওপরের কোডটি কপি করে বা সরাসরি ডাউনলোড করে আপনার ওয়েবসাইটে ব্যবহার করুন।
+        </p>
       </div>
-
     </div>
   </div>
 
-  <!-- Hidden Template (DO NOT EDIT THIS TEXTAREA) -->
+  <!-- ================================================================= -->
+  <!-- HIDDEN EXAM TEMPLATE (100% MATCHING YOUR EXACT PROVIDED CODE)     -->
+  <!-- ================================================================= -->
   <textarea id="rawTemplate" style="display:none;">
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="bn" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -124,7 +476,6 @@
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    // ওয়েব অ্যাপের ফায়ারবেস কনফিগারেশন
     const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
       apiKey: "AIzaSyCNW7psMpQaSDE957kA3AnQAFjGNFqHrCo",
       authDomain: "vector-7eda0.firebaseapp.com",
@@ -135,27 +486,120 @@
       measurementId: "G-RCLPV9PMJF"
     };
 
-    // ফায়ারবেস ইনিশিয়ালাইজেশন
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    
     const appId = typeof __app_id !== 'undefined' ? __app_id : '__EXAM_ID__';
 
     let currentUser = null;
     let userProfile = null;
     let warningCount = 0;
-    
-    const examDuration = __DURATION_SEC__; 
+    const examDuration = __DURATION_MIN__ * 60; // সেকেন্ডে
     let totalSeconds = examDuration;
     let timerInterval = null;
     let userAnswers = {};
+    let currentQuestionOrder = [];
     let examStartTimeMs = null;
 
-    const totalQuestions = __TOTAL_QS__;
+    // সার্ভার টাইম সিঙ্ক ভেরিয়েবল
+    let serverTimeOffset = 0;
+    let initialPerfNow = performance.now();
+    let initialServerTime = null;
+    let isDeviceClockTampered = false;
 
-    const answerKeys = __CORRECT_ANSWERS_JSON__;
+    const totalQuestions = __TOTAL_QS__;
+    const correctAnswers = __CORRECT_ANSWERS_JSON__;
+
+    // পরীক্ষার সময়সূচি (ঢাকা টাইম +06:00)
+    const EXAM_START_TIME = new Date("__START_TIME__").getTime();
+    const EXAM_END_TIME = new Date("__END_TIME_TIMESTAMP__").getTime();
+    const PRACTICE_START_TIME = new Date("__PRACTICE_TIME_TIMESTAMP__").getTime();
+
+    function toBanglaDigit(str) {
+      const bngDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+      return str.toString().replace(/\d/g, d => bngDigits[d]);
+    }
+
+    function formatTimeTaken(seconds) {
+      if (seconds === undefined || seconds === null || isNaN(seconds)) return '-';
+      const totalSec = Math.max(0, Math.floor(Number(seconds)));
+      const m = Math.floor(totalSec / 60);
+      const s = totalSec % 60;
+      return toBanglaDigit(`${m > 0 ? m + ' মি: ' : ''}${s} সে:`);
+    }
+
+    // ফায়ারবেস ও অনলাইন সার্ভার থেকে আসল ঢাকা টাইম বের করা
+    async function syncWithFirebaseServerTime(uid) {
+      let realTime = null;
+
+      // ১. ফায়ারবেস সার্ভার টাইমস্ট্যাম্প চেক (সবচেয়ে নিরাপদ)
+      if (uid) {
+        try {
+          const timeRef = doc(db, 'artifacts', appId, 'users', uid, 'data', 'server_time_sync');
+          await setDoc(timeRef, { now: serverTimestamp() }, { merge: true });
+          const snap = await getDoc(timeRef);
+          if (snap.exists() && snap.data().now) {
+            realTime = snap.data().now.toDate().getTime();
+          }
+        } catch (err) {
+          console.error("Firebase time sync error:", err);
+        }
+      }
+
+      // ২. ব্যাকআপ হিসেবে WorldTimeAPI / TimeAPI (Asia/Dhaka)
+      if (!realTime) {
+        try {
+          const res = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=Asia/Dhaka');
+          if (res.ok) {
+            const data = await res.json();
+            realTime = new Date(data.dateTime + "+06:00").getTime();
+          }
+        } catch (e) {}
+      }
+
+      if (!realTime) {
+        try {
+          const res = await fetch('https://worldtimeapi.org/api/timezone/Asia/Dhaka');
+          if (res.ok) {
+            const data = await res.json();
+            realTime = new Date(data.datetime).getTime();
+          }
+        } catch (e) {}
+      }
+
+      if (realTime) {
+        const localNow = Date.now();
+        serverTimeOffset = realTime - localNow;
+        initialServerTime = realTime;
+        initialPerfNow = performance.now();
+
+        // যদি লোকাল ডিভাইসের ঘড়ি ৫ মিনিটের বেশি উল্টাপাল্টা থাকে
+        if (Math.abs(serverTimeOffset) > 5 * 60 * 1000) {
+          isDeviceClockTampered = true;
+        }
+        return realTime;
+      }
+      return null;
+    }
+
+    // সবসময় আসল সার্ভার সময় রিটার্ন করবে (ডিভাইস ঘড়ি পাল্টালেও কাজ করবে না)
+    function getTrueServerTime() {
+      if (initialServerTime !== null) {
+        const elapsedSinceSync = performance.now() - initialPerfNow;
+        return Math.floor(initialServerTime + elapsedSinceSync);
+      }
+      return Date.now() + serverTimeOffset;
+    }
+
+    function getExamMode() {
+      const now = getTrueServerTime();
+      if (now < EXAM_START_TIME) return "UPCOMING";
+      if (now >= EXAM_START_TIME && now <= EXAM_END_TIME) return "LIVE";
+      if (now > EXAM_END_TIME && now < PRACTICE_START_TIME) return "CLOSED";
+      if (now >= PRACTICE_START_TIME) return "PRACTICE";
+      return "LIVE";
+    }
 
     function showScreen(screenId) {
       document.getElementById('profileSetupScreen').style.display = 'none';
@@ -173,68 +617,193 @@
       document.getElementById('customModal').style.display = 'none';
     };
 
-    async function getRealServerTime() {
-      try {
-        const res = await fetch('https://worldtimeapi.org/api/timezone/Asia/Dhaka');
-        if (!res.ok) throw new Error("WorldTimeAPI error");
-        const data = await res.json();
-        return new Date(data.datetime).getTime();
-      } catch (e) {
-        try {
-          if (currentUser) {
-            const timeRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'data', 'time_check');
-            await setDoc(timeRef, { lastCheck: serverTimestamp() }, { merge: true });
-            const timeSnap = await getDoc(timeRef);
-            if (timeSnap.exists() && timeSnap.data().lastCheck) {
-              return timeSnap.data().lastCheck.toDate().getTime();
-            }
+    window.toggleTheme = function() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('apexTheme', newTheme);
+    };
+
+    // প্রশ্ন শাফল (Shuffle) করার ফাংশন
+    function generateShuffledOrder() {
+      const arr = [];
+      for (let i = 1; i <= totalQuestions; i++) {
+        arr.push('q' + i);
+      }
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function applyQuestionOrderToDOM(orderArray) {
+      const form = document.getElementById('quizForm');
+      orderArray.forEach((qKey, index) => {
+        const qNum = qKey.replace('q', '');
+        const card = document.getElementById(`qCard-${qNum}`);
+        if (card) {
+          const numSpan = card.querySelector('.q-serial-num');
+          if (numSpan) {
+            numSpan.innerText = `${toBanglaDigit(index + 1)}.`;
           }
-        } catch (fbErr) {
-          console.error("Firebase server time fetch error:", fbErr);
+          form.appendChild(card);
         }
-        return null;
+      });
+    }
+
+    // OMR লক করার ফাংশন (একবার দাগ দিলে আর পরিবর্তন করা যাবে না)
+    function lockQuestionOMR(qKey, selectedVal) {
+      const qNum = qKey.replace('q', '');
+      const card = document.getElementById(`qCard-${qNum}`);
+      if (!card) return;
+
+      const inputs = card.querySelectorAll(`input[name="${qKey}"]`);
+      inputs.forEach(input => {
+        const label = input.closest('.option-label');
+        if (input.value === selectedVal) {
+          input.checked = true;
+          if (label) label.classList.add('omr-selected');
+        } else {
+          if (label) label.classList.remove('omr-selected');
+        }
+        input.disabled = true; // লক করে দেওয়া হলো
+      });
+
+      card.classList.add('omr-locked-card');
+      const lockBadge = card.querySelector('.omr-status-badge');
+      if (lockBadge) {
+        lockBadge.style.display = 'inline-block';
+      }
+    }
+
+    function resetAllQuestionsOMR() {
+      for (let i = 1; i <= totalQuestions; i++) {
+        const card = document.getElementById(`qCard-${i}`);
+        if (!card) continue;
+        card.classList.remove('omr-locked-card');
+        const lockBadge = card.querySelector('.omr-status-badge');
+        if (lockBadge) lockBadge.style.display = 'none';
+
+        const inputs = card.querySelectorAll(`input[name="q${i}"]`);
+        inputs.forEach(input => {
+          input.disabled = false;
+          input.checked = false;
+          const label = input.closest('.option-label');
+          if (label) label.classList.remove('omr-selected');
+        });
       }
     }
 
     window.addEventListener('DOMContentLoaded', async () => {
-      onAuthStateChanged(auth, async (user) => {
-        if (user) {
-          currentUser = user;
-          await checkExistingProfile(user.uid);
-        } else {
-          try {
-            const cred = await signInAnonymously(auth);
-            currentUser = cred.user;
-            showScreen('profileSetupScreen');
-          } catch (err) {
-            console.error("Auth Error (Silent):", err);
-            showScreen('profileSetupScreen');
-          }
-        }
-      });
+      const savedTheme = localStorage.getItem('apexTheme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
 
-      document.getElementById('quizForm').addEventListener('change', updateAnsweredCountAndSaveDraft);
+      // MCQ সিলেক্ট ও OMR লক লিসেনার (লাইভ এবং প্র্যাকটিস উভয় মোডেই কাজ করবে)
+      document.getElementById('quizForm').addEventListener('change', handleOptionSelect);
+
+      // প্রথমে লোডিং মেসেজ দেখানো
+      showScreen('profileSetupScreen');
+      const setupContainer = document.getElementById('profileSetupScreen');
+      const originalSetupHTML = setupContainer.innerHTML;
+      setupContainer.innerHTML = `
+        <div class="card" style="text-align: center;">
+          <h3 style="color:var(--primary-color); margin-bottom: 10px;">🔄 ফায়ারবেস সার্ভারের সময় যাচাই করা হচ্ছে...</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">অনুগ্রহ করে কিছুক্ষণ অপেক্ষা করুন।</p>
+        </div>`;
+
+      // ফায়ারবেস অথেনটিকেশন ও সার্ভার টাইম সিঙ্ক
+      try {
+        const cred = await signInAnonymously(auth);
+        currentUser = cred.user;
+      } catch (err) {
+        console.error("Auth Error:", err);
+      }
+
+      const syncedTime = await syncWithFirebaseServerTime(currentUser ? currentUser.uid : null);
+      if (!syncedTime) {
+        setupContainer.innerHTML = `
+          <div class="card" style="text-align: center;">
+            <h3 style="color:var(--danger-color); margin-bottom: 10px;">⚠️ সার্ভার সময় যাচাই করা যায়নি!</h3>
+            <p style="color: var(--text-muted); font-weight: 600;">অনুগ্রহ করে ইন্টারনেট কানেকশন চেক করে পেজটি রিলোড দিন।</p>
+          </div>`;
+        return;
+      }
+
+      const mode = getExamMode();
+      const tamperNotice = isDeviceClockTampered ? `
+        <div style="background: rgba(239,68,68,0.12); border: 1px solid var(--danger-color); color: var(--danger-color); padding: 10px; border-radius: 8px; margin-bottom: 14px; font-size: 0.85rem; font-weight: 700;">
+          🕵️ ভাই মজা করেন কেন? আপনার ডিভাইসের ঘড়ির টাইম পাল্টানো হয়েছে! ফায়ারবেস সার্ভারের আসল ঢাকা টাইম দিয়ে আপনাকে ট্র্যাক করা হচ্ছে।
+        </div>` : '';
+
+      if (mode === "UPCOMING") {
+        setupContainer.innerHTML = `
+          <div class="card" style="text-align: center;">
+            ${tamperNotice}
+            <h3 style="color:var(--danger-color); margin-bottom: 10px; font-size: 1.4rem;">⏳ পরীক্ষা এখনও শুরু হয়নি!</h3>
+            <p style="color: var(--text-muted); font-weight: 600; margin-bottom: 12px;">লাইভ পরীক্ষা শুরু হবে: __FORMATTED_START_TIME__ (ঢাকা টাইম)।</p>
+            <p style="font-size: 0.82rem; color: var(--text-muted);">ডিভাইসের টাইম পরিবর্তন করে পরীক্ষায় প্রবেশ করা যাবে না।</p>
+          </div>`;
+        return;
+      }
+
+      if (mode === "CLOSED") {
+        setupContainer.innerHTML = `
+          <div class="card" style="text-align: center;">
+            ${tamperNotice}
+            <h3 style="color:var(--danger-color); margin-bottom: 10px; font-size: 1.4rem;">🛑 লাইভ পরীক্ষা শেষ!</h3>
+            <p style="color: var(--text-muted); font-weight: 600;">প্র্যাকটিস এক্সাম __FORMATTED_PRACTICE_TIME__ (ঢাকা টাইম) থেকে চালু হবে। অনুগ্রহ করে অপেক্ষা করুন।</p>
+          </div>`;
+        return;
+      }
+
+      if (mode === "PRACTICE") {
+        setupContainer.innerHTML = `
+          <div class="card" style="text-align: center;">
+            ${tamperNotice}
+            <h3 style="color:var(--primary-color); margin-bottom: 10px; font-size: 1.4rem;">✅ প্র্যাকটিস এক্সাম চালু আছে</h3>
+            <p style="margin-bottom: 20px; color: var(--text-muted); font-size: 0.92rem;">প্র্যাকটিস এক্সামে ক্লাউডে কোনো ডেটা সেভ হবে না, প্রতিবার প্রশ্ন শাফল হবে এবং যতবার খুশি পরীক্ষা দিতে পারবেন।</p>
+            <button class="btn btn-primary" onclick="startPracticeExam()">প্র্যাকটিস শুরু করুন 🚀</button>
+          </div>`;
+        return;
+      }
+
+      // যদি LIVE মোড হয়
+      setupContainer.innerHTML = originalSetupHTML;
+      if (isDeviceClockTampered) {
+        showModal("⚠️ আপনার ডিভাইসের সময় ভুল আছে! তবে চিন্তা নেই, ফায়ারবেস সার্ভারের আসল সময় অনুযায়ী আপনার পরীক্ষা পরিচালিত হবে।");
+      }
+      if (currentUser) {
+        await checkExistingProfile(currentUser.uid);
+      }
     });
 
-    async function updateAnsweredCountAndSaveDraft() {
-      let count = 0;
-      userAnswers = {};
+    // অপশন সিলেক্ট করার সাথে সাথে OMR লক + কাউন্টার আপডেট + ড্রাফট সেভ
+    async function handleOptionSelect(e) {
+      const target = e.target;
+      if (!target || target.type !== 'radio') return;
 
-      for (let i = 1; i <= totalQuestions; i++) {
-        const selected = document.querySelector(`input[name="q${i}"]:checked`);
-        if (selected) {
-          count++;
-          userAnswers['q' + i] = selected.value;
-        }
-      }
-      document.getElementById('answeredBadge').innerText = `উত্তর দেওয়া হয়েছে: ${count}/${totalQuestions}`;
+      const qKey = target.name;
+      const selectedValue = target.value;
 
-      if (currentUser) {
+      // সাথে সাথে উত্তর মেমরিতে সেভ ও OMR লক
+      userAnswers[qKey] = selectedValue;
+      lockQuestionOMR(qKey, selectedValue);
+
+      // কাউন্টার আপডেট
+      const answeredCount = Object.keys(userAnswers).length;
+      document.getElementById('answeredBadge').innerText = `উত্তর দেওয়া হয়েছে: ${toBanglaDigit(answeredCount)}/${toBanglaDigit(totalQuestions)}`;
+
+      // শুধুমাত্র LIVE মোডে ফায়ারবেসে ড্রাফট সেভ হবে
+      if (getExamMode() === "LIVE" && currentUser) {
         try {
           const draftRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'data', 'draft_answers');
-          await setDoc(draftRef, { answers: userAnswers }, { merge: true });
-        } catch (e) {
-          console.error("Draft save error", e);
+          await setDoc(draftRef, { 
+            answers: userAnswers,
+            questionOrder: currentQuestionOrder
+          }, { merge: true });
+        } catch (err) {
+          console.error("Draft save error:", err);
         }
       }
     }
@@ -250,51 +819,34 @@
           const examSnap = await getDoc(examRef);
           
           if (examSnap.exists() && examSnap.data().score !== undefined) {
-            showResultPage(examSnap.data().score);
-          } else {
-            const valid = await isExamTimeValid();
-            if (valid) {
-              await startExam();
+            const savedData = examSnap.data();
+            const draftRef = doc(db, 'artifacts', appId, 'users', uid, 'data', 'draft_answers');
+            const draftSnap = await getDoc(draftRef);
+            if (draftSnap.exists()) {
+              userAnswers = draftSnap.data().answers || {};
+              currentQuestionOrder = draftSnap.data().questionOrder || generateShuffledOrder();
             } else {
-              showScreen('profileSetupScreen');
+              currentQuestionOrder = generateShuffledOrder();
             }
+            showResultPage(savedData.score, "LIVE", savedData.timeTaken);
+          } else {
+            await startExam();
           }
         } else {
           showScreen('profileSetupScreen');
         }
       } catch (e) {
-        console.error("Profile check error", e);
+        console.error("Profile check error:", e);
         showScreen('profileSetupScreen');
       }
     }
 
-    const examStartTimeStr = "__START_TIME__";
-    const examEndTimeStr = "__END_TIME_TIMESTAMP__";
-    const examStartTime = examStartTimeStr ? new Date(examStartTimeStr).getTime() : 0;
-    const examEndTime = examEndTimeStr ? new Date(examEndTimeStr).getTime() : null;
-
-    async function isExamTimeValid() {
-      const now = await getRealServerTime();
-
-      if (!now) {
-        showModal("⚠️ সঠিক অনলাইন সময় যাচাই করা যায়নি! অনুগ্রহ করে ইন্টারনেট কানেকশন পরীক্ষা করুন এবং ডিভাইসের সময় পরিবর্তন করবেন না।");
-        return false;
-      }
-
-      if (examStartTime && now < examStartTime) {
-        showModal("পরীক্ষা নির্ধারিত সময়ে শুরু হবে। অনুগ্রহ করে অপেক্ষা করুন!");
-        return false;
-      }
-      if (examEndTime && now > examEndTime) {
-        showModal("পরীক্ষার নির্ধারিত সময় শেষ হয়ে গেছে! আপনি আর অংশগ্রহণ করতে পারবেন না।");
-        return false;
-      }
-      return true;
-    }
-
     window.submitProfileAndStart = async function() {
-      const valid = await isExamTimeValid();
-      if (!valid) return;
+      await syncWithFirebaseServerTime(currentUser ? currentUser.uid : null);
+      if (getExamMode() !== "LIVE") {
+        showModal("⚠️ পরীক্ষার নির্ধারিত সময় এখন নয়! পেজটি রিলোড করুন।");
+        return;
+      }
 
       const name = document.getElementById('studentNameInput').value.trim();
       const college = document.getElementById('collegeNameInput').value.trim();
@@ -310,21 +862,17 @@
         await setDoc(profileRef, userProfile);
         await startExam();
       } catch (e) {
-        console.error(e);
         showModal("তথ্য সংরক্ষণ করতে সমস্যা হয়েছে: " + e.message);
       }
     };
 
+    // লাইভ পরীক্ষা শুরু
     async function startExam() {
       warningCount = 0;
       userAnswers = {};
+      resetAllQuestionsOMR();
 
-      const nowTime = await getRealServerTime();
-      if (!nowTime) {
-        showModal("⚠️ সঠিক সার্ভার সময় নিশ্চিত করা যায়নি! পরীক্ষা শুরু করা সম্ভব হচ্ছে না।");
-        return;
-      }
-
+      const nowServer = getTrueServerTime();
       const examRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'data', 'exam_status');
       const examSnap = await getDoc(examRef);
 
@@ -332,31 +880,39 @@
       if (examSnap.exists() && examSnap.data().startTime) {
         startTime = examSnap.data().startTime.toDate().getTime();
       } else {
-        startTime = nowTime;
+        startTime = nowServer;
         await setDoc(examRef, { startTime: serverTimestamp() }, { merge: true });
       }
       examStartTimeMs = startTime;
 
+      // ড্রাফট উত্তর ও পূর্বে শাফল করা অর্ডার লোড করা
       const draftRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'data', 'draft_answers');
       const draftSnap = await getDoc(draftRef);
       if (draftSnap.exists()) {
         userAnswers = draftSnap.data().answers || {};
-        for (let key in userAnswers) {
-          const val = userAnswers[key];
-          const input = document.querySelector(`input[name="${key}"][value="${val}"]`);
-          if (input) input.checked = true;
+        currentQuestionOrder = draftSnap.data().questionOrder || [];
+      }
+
+      if (!currentQuestionOrder || currentQuestionOrder.length !== totalQuestions) {
+        currentQuestionOrder = generateShuffledOrder();
+        await setDoc(draftRef, { questionOrder: currentQuestionOrder }, { merge: true });
+      }
+
+      // ডমে শাফলড প্রশ্ন সাজানো এবং আগের দাগানো উত্তরগুলো OMR লক করা
+      applyQuestionOrderToDOM(currentQuestionOrder);
+      for (let qKey in userAnswers) {
+        if (userAnswers[qKey]) {
+          lockQuestionOMR(qKey, userAnswers[qKey]);
         }
       }
 
-      const elapsedTime = Math.floor((nowTime - startTime) / 1000);
+      const elapsedTime = Math.floor((nowServer - startTime) / 1000);
       totalSeconds = examDuration - elapsedTime;
 
-      // Force submit if absolute end time is near
-      if (examEndTime) {
-        const secondsUntilAbsoluteEnd = Math.floor((examEndTime - nowTime) / 1000);
-        if (secondsUntilAbsoluteEnd < totalSeconds) {
-          totalSeconds = secondsUntilAbsoluteEnd;
-        }
+      // লাইভ পরীক্ষার শেষ সময় কাছে চলে আসলে টাইমার অ্যাডজাস্ট করা
+      const remainingUntilEnd = Math.floor((EXAM_END_TIME - nowServer) / 1000);
+      if (remainingUntilEnd < totalSeconds) {
+        totalSeconds = remainingUntilEnd;
       }
 
       if (totalSeconds <= 0) {
@@ -364,11 +920,9 @@
         return;
       }
 
-      let count = 0;
-      for (let i = 1; i <= totalQuestions; i++) {
-        if (document.querySelector(`input[name="q${i}"]:checked`)) count++;
-      }
-      document.getElementById('answeredBadge').innerText = `উত্তর দেওয়া হয়েছে: ${count}/${totalQuestions}`;
+      const count = Object.keys(userAnswers).length;
+      document.getElementById('answeredBadge').innerText = `উত্তর দেওয়া হয়েছে: ${toBanglaDigit(count)}/${toBanglaDigit(totalQuestions)}`;
+      document.getElementById('warningText').style.display = 'inline-block';
 
       enableAntiCheat();
       showScreen('examArea');
@@ -376,17 +930,38 @@
       startTimer();
     }
 
+    // প্র্যাকটিস পরীক্ষা শুরু (বারবার দেওয়া যাবে + প্রশ্ন শাফল হবে)
+    window.startPracticeExam = function() {
+      warningCount = 0;
+      userAnswers = {};
+      totalSeconds = examDuration;
+      examStartTimeMs = getTrueServerTime();
+
+      resetAllQuestionsOMR();
+      currentQuestionOrder = generateShuffledOrder();
+      applyQuestionOrderToDOM(currentQuestionOrder);
+
+      document.getElementById('answeredBadge').innerText = `উত্তর দেওয়া হয়েছে: ০/${toBanglaDigit(totalQuestions)}`;
+      document.getElementById('warningText').style.display = 'none';
+
+      showScreen('examArea');
+      if (window.MathJax) MathJax.typesetPromise();
+      startTimer();
+    };
+
     function enableAntiCheat() {
+      if (getExamMode() === "PRACTICE") return;
+
       document.onvisibilitychange = () => {
         if (document.hidden && document.getElementById('examArea').style.display !== 'none') {
           warningCount++;
-          document.getElementById('warningText').innerText = `ট্যাব পরিবর্তন: ${warningCount}/২`;
+          document.getElementById('warningText').innerText = `ট্যাব পরিবর্তন: ${toBanglaDigit(warningCount)}/২`;
           
           if (warningCount >= 2) {
             showModal("⚠️ সতর্কতা! একাধিকবার ট্যাব পরিবর্তন করায় পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হয়েছে!");
             submitExam(true);
           } else {
-            showModal(`⚠️ সতর্কবার্তা (${warningCount}/২): পরীক্ষা চলাকালীন ট্যাব পরিবর্তন করা নিষেধ!`);
+            showModal(`⚠️ সতর্কবার্তা (${toBanglaDigit(warningCount)}/২): পরীক্ষা চলাকালীন ট্যাব পরিবর্তন করা নিষেধ!`);
           }
         }
       };
@@ -416,18 +991,18 @@
         
         if (draftSnap.exists()) {
           userAnswers = draftSnap.data().answers || {};
+          currentQuestionOrder = draftSnap.data().questionOrder || generateShuffledOrder();
         }
 
         let score = 0;
         for (let i = 1; i <= totalQuestions; i++) {
           const qKey = 'q' + i;
-          if (userAnswers[qKey] === answerKeys[qKey]) {
+          if (userAnswers[qKey] === correctAnswers[qKey]) {
             score++;
           }
         }
 
-        const nowTime = (await getRealServerTime()) || Date.now();
-        const timeTaken = examStartTimeMs ? Math.max(0, Math.floor((nowTime - examStartTimeMs) / 1000)) : examDuration;
+        const timeTaken = examDuration;
 
         const examRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'data', 'exam_status');
         await setDoc(examRef, { score: score, timeTaken: timeTaken, timestamp: serverTimestamp(), autoSubmitted: true }, { merge: true });
@@ -442,10 +1017,8 @@
           timestamp: serverTimestamp()
         });
 
-        showResultPage(score);
-      } catch (e) {
-        console.error("Auto Submit Error:", e);
-      }
+        showResultPage(score, "LIVE", timeTaken);
+      } catch (e) { console.error("Auto Submit Error:", e); }
     }
 
     window.submitExam = async function(isTerminated = false) {
@@ -453,23 +1026,19 @@
       document.onvisibilitychange = null;
 
       let score = 0;
-      let currentAnswers = {};
-
       for (let i = 1; i <= totalQuestions; i++) {
         const qKey = 'q' + i;
-        const selected = document.querySelector(`input[name="${qKey}"]:checked`);
-        currentAnswers[qKey] = selected ? selected.value : null;
-
-        if (selected && selected.value === answerKeys[qKey]) {
+        if (userAnswers[qKey] && userAnswers[qKey] === correctAnswers[qKey]) {
           score++;
         }
       }
-      userAnswers = currentAnswers;
 
-      const nowTime = (await getRealServerTime()) || Date.now();
-      const timeTaken = examStartTimeMs ? Math.max(0, Math.floor((nowTime - examStartTimeMs) / 1000)) : examDuration;
+      const mode = getExamMode();
+      const nowServer = getTrueServerTime();
+      const elapsedByClock = examStartTimeMs ? Math.floor((nowServer - examStartTimeMs) / 1000) : (examDuration - totalSeconds);
+      const timeTaken = Math.max(1, Math.min(examDuration, elapsedByClock));
 
-      if (currentUser && userProfile) {
+      if (mode === "LIVE" && currentUser && userProfile) {
         try {
           const examRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'data', 'exam_status');
           await setDoc(examRef, { score: score, timeTaken: timeTaken, timestamp: serverTimestamp(), terminated: isTerminated }, { merge: true });
@@ -486,18 +1055,34 @@
         } catch(err) { console.error("Save Error:", err); }
       }
 
-      showResultPage(score);
+      showResultPage(score, mode, timeTaken);
     };
 
-    function showResultPage(score) {
+    function showResultPage(score, mode, timeTaken) {
       showScreen('resultArea');
-      document.getElementById('scoreDisplayVal').innerText = score;
+      document.getElementById('scoreDisplayVal').innerText = toBanglaDigit(score);
+      document.getElementById('userTimeTakenVal').innerText = formatTimeTaken(timeTaken);
       
-      loadLeaderboard();
+      if (mode === "PRACTICE") {
+        document.getElementById('retakeBtn').style.display = 'inline-block';
+        document.getElementById('userRankVal').innerText = '- (প্র্যাকটিস)';
+        document.getElementById('tabLbBtn').style.display = 'none'; 
+        switchTab('review');
+      } else {
+        document.getElementById('retakeBtn').style.display = 'none';
+        document.getElementById('tabLbBtn').style.display = 'block';
+        loadLeaderboard();
+        switchTab('leaderboard');
+      }
+      
       renderAnswerReview();
-      
-      switchTab('leaderboard');
     }
+
+    window.retakePracticeExam = function() {
+      document.getElementById('reviewTabContent').innerHTML = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      startPracticeExam(); 
+    };
 
     window.switchTab = function(tabName) {
       if (tabName === 'leaderboard') {
@@ -514,40 +1099,42 @@
       }
     };
 
+    // লিডারবোর্ড লজিক: ১. নম্বর বেশি -> ২. কম সময় -> ৩. আগে সাবমিট
     function loadLeaderboard() {
       const lbRef = collection(db, 'artifacts', appId, 'public', 'data', 'leaderboard');
-      
       onSnapshot(lbRef, (snapshot) => {
         let lbData = [];
         snapshot.forEach(doc => lbData.push(doc.data()));
         
         lbData.sort((a, b) => {
-          if (b.score !== a.score) {
-            return b.score - a.score;
-          }
-          const timeA = (a.timeTaken !== undefined && a.timeTaken !== null) ? a.timeTaken : Infinity;
-          const timeB = (b.timeTaken !== undefined && b.timeTaken !== null) ? b.timeTaken : Infinity;
-          if (timeA !== timeB) {
-            return timeA - timeB;
-          }
-          const tA = a.timestamp && a.timestamp.toDate ? a.timestamp.toDate().getTime() : 0;
-          const tB = b.timestamp && b.timestamp.toDate ? b.timestamp.toDate().getTime() : 0;
+          const scoreA = Number(a.score) || 0;
+          const scoreB = Number(b.score) || 0;
+          if (scoreB !== scoreA) return scoreB - scoreA;
+
+          const timeA = (a.timeTaken !== undefined && a.timeTaken !== null) ? Number(a.timeTaken) : Infinity;
+          const timeB = (b.timeTaken !== undefined && b.timeTaken !== null) ? Number(b.timeTaken) : Infinity;
+          if (timeA !== timeB) return timeA - timeB;
+
+          const tA = a.timestamp && a.timestamp.toDate ? a.timestamp.toDate().getTime() : Infinity;
+          const tB = b.timestamp && b.timestamp.toDate ? b.timestamp.toDate().getTime() : Infinity;
           return tA - tB;
         });
 
         const tbody = document.getElementById('leaderboardBody');
         tbody.innerHTML = '';
-
         let myRank = '-';
 
         if(lbData.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px; color:#64748b;">এখনো কেউ পরীক্ষা দেয়নি। প্রথম পরীক্ষা দিয়ে লিডারবোর্ডের শীর্ষে আসো!</td></tr>';
-            return;
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px; color:var(--text-muted);">এখনো কেউ পরীক্ষা দেয়নি।</td></tr>';
+          return;
         }
 
         lbData.forEach((row, index) => {
           if (currentUser && row.uid === currentUser.uid) {
             myRank = index + 1;
+            if (row.timeTaken !== undefined) {
+              document.getElementById('userTimeTakenVal').innerText = formatTimeTaken(row.timeTaken);
+            }
           }
 
           let tr = document.createElement('tr');
@@ -558,46 +1145,54 @@
           else if(index === 1) medal = "🥈 ";
           else if(index === 2) medal = "🥉 ";
 
-          let formattedTime = '-';
-          if (row.timeTaken !== undefined && row.timeTaken !== null) {
-            const m = Math.floor(row.timeTaken / 60);
-            const s = row.timeTaken % 60;
-            formattedTime = `${m > 0 ? m + ' মি: ' : ''}${s} সে:`;
-          }
+          const formattedTime = formatTimeTaken(row.timeTaken);
 
           tr.innerHTML = `
-            <td style="text-align: center;"><div class="rank-badge">${medal}${index + 1}</div></td>
-            <td style="font-weight: 600;">${row.name}</td>
-            <td style="font-size: 0.85rem; color:#475569;">${row.college}</td>
-            <td class="lb-score">${row.score}</td>
-            <td style="text-align: center; font-size: 0.85rem; font-weight: 600; color: #475569;">${formattedTime}</td>
+            <td style="text-align: center;"><div class="rank-badge">${medal}${toBanglaDigit(index + 1)}</div></td>
+            <td style="font-weight: 700;">${row.name}</td>
+            <td style="font-size: 0.85rem; color:var(--text-muted);">${row.college}</td>
+            <td class="lb-score">${toBanglaDigit(row.score)}</td>
+            <td style="text-align: center;"><span class="time-pill">⏱️ ${formattedTime}</span></td>
           `;
           tbody.appendChild(tr);
         });
 
-        document.getElementById('userRankVal').innerText = myRank !== '-' ? `#${myRank}` : '-';
-      }, (error) => { console.error("Leaderboard Error:", error); });
+        document.getElementById('userRankVal').innerText = myRank !== '-' ? `#${toBanglaDigit(myRank)}` : '-';
+      });
     }
 
+    // স্টুডেন্ট যে শাফলড অর্ডারে পরীক্ষা দিয়েছে, ঠিক সেই অর্ডারেই রিভিউ দেখানো হবে
     function renderAnswerReview() {
       const reviewContainer = document.getElementById('reviewTabContent');
       reviewContainer.innerHTML = '';
 
-      for (let i = 1; i <= totalQuestions; i++) {
-        const qKey = 'q' + i;
-        const origCard = document.getElementById(`qCard-${i}`);
-        
-        if(!origCard) continue;
+      if (!currentQuestionOrder || currentQuestionOrder.length !== totalQuestions) {
+        currentQuestionOrder = [];
+        for (let i = 1; i <= totalQuestions; i++) currentQuestionOrder.push('q' + i);
+      }
+
+      currentQuestionOrder.forEach((qKey, index) => {
+        const qNum = qKey.replace('q', '');
+        const origCard = document.getElementById(`qCard-${qNum}`);
+        if(!origCard) return;
 
         const cloneCard = origCard.cloneNode(true);
+        cloneCard.classList.remove('omr-locked-card');
+        const badge = cloneCard.querySelector('.omr-status-badge');
+        if (badge) badge.style.display = 'none';
+
+        const numSpan = cloneCard.querySelector('.q-serial-num');
+        if (numSpan) numSpan.innerText = `${toBanglaDigit(index + 1)}.`;
+
         const userAns = userAnswers[qKey];
-        const correctAns = answerKeys[qKey];
+        const correctAns = correctAnswers[qKey];
 
         const options = cloneCard.querySelectorAll('input[type="radio"]');
         options.forEach(input => {
           input.disabled = true;
           const label = input.closest('.option-label');
-          
+          label.classList.remove('omr-selected');
+
           if (input.value === correctAns) {
             label.classList.add('correct-option');
           }
@@ -610,99 +1205,156 @@
         });
 
         const solBox = cloneCard.querySelector('.solution-notes');
-        if(solBox) solBox.style.display = 'block';
+        const isCorrect = userAns === correctAns;
+        const userAnsColor = isCorrect ? 'var(--success-color)' : 'var(--danger-color)';
+        const displayUserAns = userAns ? userAns : "কোনো উত্তর দেননি";
 
+        const customReviewHTML = `
+          <div class="review-details-box">
+            <div class="review-stat">
+              <span style="color: var(--text-main);">আপনার দেওয়া উত্তর:</span> 
+              <strong style="color: ${userAnsColor};">${displayUserAns}</strong>
+            </div>
+            <div class="review-stat">
+              <span style="color: var(--text-main);">সঠিক উত্তর:</span> 
+              <strong style="color: var(--success-color);">${correctAns}</strong>
+            </div>
+            <div class="review-explanation">
+              <span class="blue-heading">ব্যাখ্যা:</span> ${solBox ? solBox.innerHTML : ''}
+            </div>
+          </div>
+        `;
+        
+        if (solBox) solBox.outerHTML = customReviewHTML;
         reviewContainer.appendChild(cloneCard);
-      }
+      });
+
       if (window.MathJax) MathJax.typesetPromise();
     }
   </script>
 
   <style>
     :root {
-      --blue-marker: #0038a8;
-      --green-gel: #0b6623;
-      --highlight-yellow: #fff3a8;
-      --paper-bg: #fdfbf7;
-      --line-color: #e2e8f0;
-      --margin-line: #ff8585;
-      --badge-red: #d92525;
-      --bg-color: #f1f5f9;
+      --bg-main: #f1f5f9;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary-color: #1e3a8a; 
+      --btn-text: #ffffff;
+      --border-color: #e2e8f0;
+      --success-color: #16a34a;
+      --danger-color: #dc2626;
+      --header-bg: #ffffff;
+      --header-text: #0f172a;
+      --input-bg: #ffffff;
+      --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      --review-bg: #f8fafc;
+    }
+
+    [data-theme="dark"] {
+      --bg-main: #0b1120;
+      --bg-card: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary-color: #eab308;
+      --btn-text: #000000;
+      --border-color: #334155;
+      --success-color: #22c55e;
+      --danger-color: #ef4444;
+      --header-bg: #111827;
+      --header-text: #f8fafc;
+      --input-bg: #0f172a;
+      --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.4);
+      --review-bg: #0f172a;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Hind Siliguri', sans-serif; background-color: var(--bg-color); color: #0f172a; line-height: 1.6; padding: 10px; }
+    body { font-family: 'Hind Siliguri', sans-serif; background-color: var(--bg-main); color: var(--text-main); line-height: 1.6; padding: 10px; transition: background 0.3s, color 0.3s; }
     
-    .container { max-width: 900px; margin: 0 auto; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 25px rgba(0,0,0,0.08); overflow: visible; min-height: 85vh; position: relative; }
+    .container { max-width: 900px; margin: 0 auto; min-height: 85vh; position: relative; }
     
-    .header-banner { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: #fff; padding: 25px 20px; text-align: center; }
-    .header-banner h1 { font-size: 1.5rem; font-weight: 700; color: #f8fafc; }
-    .header-banner p { font-size: 0.9rem; color: #cbd5e1; }
+    .header-bar { background: var(--header-bg); border: 1px solid var(--border-color); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 12px; box-shadow: var(--shadow-sm); margin-bottom: 16px; }
+    .header-title { font-size: 1.3rem; font-weight: 700; color: var(--header-text); display: flex; align-items: center; gap: 10px; }
+    .theme-btn { background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; font-family: inherit; }
 
-    .screen-section { padding: 30px 20px; }
-    .card { max-width: 450px; margin: 20px auto; border: 1px solid #cbd5e1; border-radius: 12px; padding: 25px; background: #ffffff; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; }
-    
-    .schedule-box {
-      background: #f0f9ff;
-      border: 1px dashed #0284c7;
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 20px;
-      text-align: left;
-      font-size: 0.88rem;
-      color: #0369a1;
-    }
-    .schedule-box div { font-weight: 600; margin-bottom: 4px; color: #0c4a6e; }
+    .exam-banner { background: var(--bg-card); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; box-shadow: var(--shadow-sm); }
+    .exam-banner h1 { font-size: 1.4rem; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
+    .exam-banner p { font-size: 0.9rem; color: var(--text-muted); }
 
+    .screen-section { padding: 5px; }
+    .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 28px; box-shadow: var(--shadow-sm); max-width: 460px; margin: 0 auto; }
+    
     .form-group { margin-bottom: 16px; text-align: left; }
-    .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; color: #334155; }
-    .form-group input { width: 100%; padding: 12px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-family: inherit; font-size: 0.95rem; outline: none; }
-    .form-group input:focus { border-color: var(--blue-marker); }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; color: var(--text-main); }
+    .form-group input { width: 100%; padding: 12px; background: var(--input-bg); border: 1.5px solid var(--border-color); color: var(--text-main); border-radius: 8px; font-family: inherit; font-size: 0.95rem; outline: none; }
+    .form-group input:focus { border-color: var(--primary-color); }
     
-    .btn { padding: 12px 20px; font-size: 1rem; font-weight: 600; border-radius: 8px; cursor: pointer; border: none; width: 100%; margin-top: 10px; }
-    .btn-primary { background: var(--blue-marker); color: white; }
+    .btn { padding: 12px 20px; font-size: 1rem; font-weight: 700; border-radius: 8px; cursor: pointer; border: none; width: 100%; margin-top: 10px; font-family: inherit; transition: 0.2s; }
+    .btn-primary { background: var(--primary-color); color: var(--btn-text); }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
 
-    .timer-bar { position: sticky; top:0; z-index:100;
-    
-    
-    background: #ffffff; border-bottom: 2px solid var(--blue-marker); padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; z-index: 90; }
-    .timer-box { font-size: 1.15rem; font-weight: 700; color: var(--badge-red); background: #fef2f2; padding: 4px 12px; border-radius: 20px; border: 1px solid #fca5a5; }
-    .warning-badge { font-size: 0.85rem; background: #fff7ed; color: #c2410c; padding: 4px 10px; border-radius: 6px; border: 1px solid #ffedd5; font-weight: 600; }
-    .answered-badge { font-size: 0.85rem; background: #eff6ff; color: #1d4ed8; padding: 4px 10px; border-radius: 6px; border: 1px solid #bfdbfe; font-weight: 700; }
+    /* Sticky Timer Bar */
+    .timer-bar { 
+      position: sticky; 
+      top: 10px; 
+      background: var(--bg-card); 
+      border: 2px solid var(--primary-color); 
+      padding: 12px 18px; 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 10px; 
+      justify-content: space-between; 
+      align-items: center; 
+      z-index: 1000; 
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+      margin-bottom: 20px;
+    }
+    .timer-box { font-size: 1.15rem; font-weight: 700; color: var(--danger-color); background: var(--bg-main); padding: 4px 12px; border-radius: 20px; border: 1px solid var(--danger-color); }
+    .warning-badge { font-size: 0.85rem; background: var(--bg-main); color: var(--danger-color); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--danger-color); font-weight: 600; }
+    .answered-badge { font-size: 0.85rem; background: var(--bg-main); color: var(--primary-color); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--primary-color); font-weight: 700; }
 
-    .notebook-paper { background-color: var(--paper-bg); background-image: linear-gradient(var(--line-color) 1px, transparent 1px); background-size: 100% 28px; padding: 25px 20px 25px 30px; position: relative; border-left: 3px solid var(--margin-line); }
+    .mcq-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-sm); transition: 0.2s; }
+    .omr-locked-card { border-color: var(--primary-color); }
+    .question-header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 15px; }
+    .question-title { font-size: 1.05rem; font-weight: 700; color: var(--text-main); }
+    .omr-status-badge { display: none; font-size: 0.75rem; background: var(--bg-main); color: var(--primary-color); border: 1px solid var(--primary-color); padding: 2px 8px; border-radius: 12px; font-weight: 700; white-space: nowrap; }
 
-    .mcq-card { background: rgba(255, 255, 255, 0.95); border: 1px solid #cbd5e1; border-radius: 10px; padding: 18px; margin-bottom: 20px; position: relative; }
-    .question-title { font-size: 1.05rem; font-weight: 700; color: var(--blue-marker); margin-bottom: 12px; }
     .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     @media (max-width: 580px) { .options-grid { grid-template-columns: 1fr; } }
     
-    .option-label { display: flex; align-items: center; padding: 10px 12px; background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 8px; cursor: pointer; font-size: 0.95rem; }
-    .option-label input { margin-right: 10px; accent-color: var(--blue-marker); transform: scale(1.1); }
+    .option-label { display: flex; align-items: center; padding: 12px; background: var(--bg-main); border: 1.5px solid var(--border-color); border-radius: 8px; cursor: pointer; font-size: 0.95rem; color: var(--text-main); font-weight: 600; transition: 0.2s; }
+    .option-label:hover { border-color: var(--primary-color); }
+    .option-label input { margin-right: 10px; accent-color: var(--primary-color); transform: scale(1.1); }
+    .option-label.omr-selected { border-color: var(--primary-color); background: rgba(234, 179, 8, 0.12); font-weight: 700; }
 
-    .correct-option { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; font-weight: bold; }
-    .wrong-option { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; font-weight: bold; }
+    .correct-option { border-color: var(--success-color) !important; background-color: rgba(34, 197, 94, 0.12) !important; }
+    .wrong-option { border-color: var(--danger-color) !important; background-color: rgba(239, 68, 68, 0.12) !important; }
 
-    .solution-notes { display: none; margin-top: 15px; padding: 14px; background: #f0fdf4; border-left: 4px solid var(--green-gel); border-radius: 0 8px 8px 0; font-family: 'Kalam', 'Hind Siliguri', cursive; color: var(--green-gel); font-size: 1rem; }
-    .solution-notes h4 { font-family: 'Hind Siliguri', sans-serif; color: var(--blue-marker); font-size: 0.95rem; margin-bottom: 4px;}
-    .highlight { background-color: var(--highlight-yellow); padding: 0 4px; border-radius: 3px; color: #000; font-weight: 600; }
-    .blue-heading { color: var(--blue-marker); font-weight: 700; }
+    .solution-notes { display: none; }
+    
+    .review-details-box { margin-top: 15px; padding: 15px; background: var(--review-bg); border-radius: 8px; border: 1px solid var(--border-color); }
+    .review-stat { margin-bottom: 6px; font-weight: 600; font-size: 1rem; }
+    .review-explanation { border-top: 1px dashed var(--border-color); padding-top: 10px; margin-top: 10px; font-family: 'Kalam', 'Hind Siliguri', cursive; color: var(--text-main); font-size: 1rem; }
+    .highlight { background-color: rgba(234, 179, 8, 0.2); padding: 0 4px; border-radius: 3px; color: var(--text-main); font-weight: 600; }
+    .blue-heading { color: var(--primary-color); font-weight: 700; font-family: 'Hind Siliguri', sans-serif; }
 
-    .result-summary { background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%); border: 1px solid #bae6fd; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 20px; }
-    .score-badge { font-size: 2.2rem; font-weight: 800; color: var(--blue-marker); }
+    .result-summary { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 28px; text-align: center; margin-bottom: 20px; box-shadow: var(--shadow-sm); }
+    .score-badge { font-size: 2.5rem; font-weight: 800; color: var(--primary-color); }
+    .result-meta { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 10px; font-size: 0.95rem; font-weight: 600; }
 
-    .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; }
-    .tab-btn { flex: 1; padding: 12px; background: #f1f5f9; border: none; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; border-top-left-radius: 8px; border-top-right-radius: 8px; color: #64748b; }
-    .tab-btn.active { background: var(--blue-marker); color: white; }
+    .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tab-btn { flex: 1; padding: 12px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: 0.3s; }
+    .tab-btn.active { background: var(--primary-color); color: var(--btn-text); border-color: var(--primary-color); }
 
-    .lb-container { border: 1px solid #cbd5e1; border-radius: 10px; overflow: hidden; background: white; }
-    table { width: 100%; border-collapse: collapse; text-align: left; }
-    th, td { padding: 12px 14px; border-bottom: 1px solid #e2e8f0; }
-    th { background: #f1f5f9; font-weight: 700; color: #475569; font-size: 0.85rem; }
-    tr:nth-child(even) { background-color: #f8fafc; }
-    .my-row { background-color: #fef9c3 !important; }
-    .lb-score { color: var(--blue-marker); font-weight: 700; font-size: 1.1rem; text-align: center;}
-    .rank-badge { display: inline-block; background: #e2e8f0; padding: 2px 8px; border-radius: 12px; font-weight: bold; font-size: 0.85rem; }
+    .lb-container { border: 1px solid var(--border-color); border-radius: 12px; overflow-x: auto; background: var(--bg-card); box-shadow: var(--shadow-sm); }
+    table { width: 100%; border-collapse: collapse; text-align: left; min-width: 520px; }
+    th, td { padding: 14px; border-bottom: 1px solid var(--border-color); color: var(--text-main); }
+    th { background: var(--bg-main); font-weight: 700; color: var(--text-muted); font-size: 0.85rem; }
+    .my-row { background-color: rgba(234, 179, 8, 0.15) !important; }
+    .lb-score { color: var(--primary-color); font-weight: 800; font-size: 1.15rem; text-align: center; }
+    .rank-badge { display: inline-block; background: var(--bg-main); padding: 4px 10px; border-radius: 12px; font-weight: bold; font-size: 0.85rem; border: 1px solid var(--border-color); }
+    .time-pill { display: inline-block; background: var(--bg-main); color: var(--text-main); padding: 4px 10px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; border: 1px solid var(--border-color); }
 
     .footer-notice { 
       text-align: center; 
@@ -712,8 +1364,8 @@
       font-size: 0.9rem; 
       font-weight: 600; 
       border-top: 2px solid #d4af37;
-      box-shadow: inset 0 1px 3px rgba(255, 215, 0, 0.15);
-      letter-spacing: 0.5px;
+      border-radius: 12px;
+      margin-top: 25px;
     }
     .golden-text {
       background: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
@@ -722,39 +1374,41 @@
       font-weight: 800;
       font-size: 1.05rem;
       display: inline-block;
-      text-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
     }
 
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); }
-    .modal-content { background: white; padding: 25px; border-radius: 12px; max-width: 380px; text-align: center; width: 90%; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); display: none; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(4px); }
+    .modal-content { background: var(--bg-card); padding: 25px; border-radius: 16px; max-width: 380px; text-align: center; width: 90%; border: 1px solid var(--border-color); box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
   </style>
 </head>
 <body>
-  
-  <!-- অ্যালার্ট মোডাল -->
+
   <div class="modal-overlay" id="customModal">
     <div class="modal-content">
       <div style="font-size: 2rem; margin-bottom: 10px;">🔔</div>
-      <p id="modalMessage" style="margin-bottom: 20px; font-weight: 600; font-size: 0.95rem; color: #334155;"></p>
+      <p id="modalMessage" style="margin-bottom: 20px; font-weight: 600; font-size: 0.95rem; color: var(--text-main);"></p>
       <button class="btn btn-primary" onclick="closeModal()">ঠিক আছে</button>
     </div>
   </div>
 
   <div class="container">
-    <div class="header-banner">
+    <div class="header-bar">
+      <div class="header-title">
+        <span style="font-size: 1.6rem; color: var(--primary-color);">⚡</span>
+        HSC Cloud Exam Hub
+      </div>
+      <button class="theme-btn" onclick="toggleTheme()">🌓 Theme</button>
+    </div>
+
+    <div class="exam-banner">
       <h1>__PAGE_TITLE__</h1>
       <p>__PAGE_SUBTITLE__</p>
     </div>
-    
+
     <!-- ১. নাম ও কলেজ ইনপুট স্ক্রিন -->
     <div id="profileSetupScreen" class="screen-section">
       <div class="card">
-        <h3 style="color: var(--blue-marker); margin-bottom: 8px;">পরীক্ষার্থীর তথ্য</h3>
-        <p style="margin-bottom: 15px; color: #64748b; font-size: 0.85rem;">লিডারবোর্ডের জন্য আপনার সঠিক নাম ও কলেজের নাম দিন.</p>
-        
-        <!-- পরীক্ষা শুরু ও শেষ সময়সূচি -->
-        __SCHEDULE_BOX_HTML__
-
+        <h3 style="color: var(--text-main); margin-bottom: 8px; text-align: center;">পরীক্ষার্থীর তথ্য</h3>
+        <p style="margin-bottom: 20px; color: var(--text-muted); font-size: 0.85rem; text-align: center;">লিডারবোর্ডের জন্য আপনার সঠিক নাম ও কলেজের নাম দিন।</p>
         <div class="form-group">
           <label>পরীক্ষার্থীর নাম:</label>
           <input type="text" id="studentNameInput" placeholder="পূর্ণ নাম লিখুন" />
@@ -766,78 +1420,134 @@
         <button class="btn btn-primary" onclick="submitProfileAndStart()">পরীক্ষা শুরু করুন 🚀</button>
       </div>
     </div>
-    
+
     <!-- ২. পরীক্ষা নেওয়ার স্ক্রিন -->
-    <div id="examArea" style="display: none; background: #f8fafc;">
+    <div id="examArea" style="display: none;">
       <div class="timer-bar">
-        <div class="answered-badge" id="answeredBadge">উত্তর দেওয়া হয়েছে: 0/__TOTAL_QS__</div>
-        <div class="warning-badge" id="warningText">ট্যাব পরিবর্তন: 0/২</div>
+        <div class="answered-badge" id="answeredBadge">উত্তর দেওয়া হয়েছে: ০/__BNG_TOTAL_QS__</div>
+        <div class="warning-badge" id="warningText">ট্যাব পরিবর্তন: ০/২</div>
         <div class="timer-box" id="timeDisplay">__DURATION_MIN__:00</div>
       </div>
-      
-      <div class="notebook-paper">
-        <form id="quizForm">__QUESTIONS_HTML__</form>
+
+      <div class="questions-container">
+        <form id="quizForm">
+__QUESTIONS_HTML__
+        </form>
       </div>
-      
-      <div style="padding: 20px; text-align: center; background: #fff; border-top: 1px solid #e2e8f0;">
-        <button type="button" class="btn btn-primary" style="max-width: 300px; font-size: 1.1rem; border-radius: 30px; padding: 14px;" onclick="submitExam()">পরীক্ষা জমা দিন</button>
+
+      <div style="padding: 20px; text-align: center;">
+        <button type="button" class="btn btn-primary" style="max-width: 300px; font-size: 1.1rem; padding: 14px;" onclick="submitExam()">পরীক্ষা জমা দিন</button>
       </div>
     </div>
-    
+
     <!-- ৩. ফলাফল ও রিভিউ স্ক্রিন -->
     <div id="resultArea" class="screen-section" style="display: none;">
       <div class="result-summary">
-        <h3 style="color: #0f172a; margin-bottom: 5px;">পরীক্ষা সম্পন্ন ও ফলাফল সংরক্ষিত হয়েছে!</h3>
-        <p style="color: #64748b; font-size: 0.9rem;">আপনার প্রাপ্ত নম্বর:</p>
-        <div class="score-badge"><span id="scoreDisplayVal">0</span> <span style="font-size: 1.2rem; color: #64748b;">/ __TOTAL_QS__</span></div>
-        <p style="font-size: 0.9rem; font-weight: 600; color: #0038a8; margin-top: 5px;">আপনার অবস্থান: <span id="userRankVal">-</span></p>
+        <h3 style="color: var(--text-main); margin-bottom: 5px;">পরীক্ষা সম্পন্ন হয়েছে!</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">আপনার প্রাপ্ত নম্বর:</p>
+        <div class="score-badge"><span id="scoreDisplayVal">০</span> <span style="font-size: 1.2rem; color: var(--text-muted);">/ __BNG_TOTAL_QS__</span></div>
+        
+        <div class="result-meta">
+          <div>🏆 আপনার অবস্থান: <span id="userRankVal" style="color: var(--primary-color);">-</span></div>
+          <div>⏱️ সময় লেগেছে: <span id="userTimeTakenVal" style="color: var(--primary-color);">-</span></div>
+        </div>
+        
+        <button id="retakeBtn" class="btn btn-primary" style="display:none; margin-top: 20px; width: auto;" onclick="retakePracticeExam()">আবার প্র্যাকটিস করুন 🔄</button>
       </div>
-      
+
       <div class="nav-tabs">
         <button id="tabLbBtn" class="tab-btn active" onclick="switchTab('leaderboard')">🏆 লিডারবোর্ড</button>
         <button id="tabReviewBtn" class="tab-btn" onclick="switchTab('review')">📝 উত্তর পর্যালোচনা</button>
       </div>
-      
+
       <div id="leaderboardTabContent">
         <div class="lb-container">
           <table>
-            <thead><tr><th style="width: 70px; text-align: center;">র‍্যাংক</th><th>নাম</th><th>কলেজ</th><th style="text-align: center;">নম্বর</th><th style="text-align: center;">সময়</th></tr></thead>
-            <tbody id="leaderboardBody"></tbody>
+            <thead>
+              <tr>
+                <th style="width: 75px; text-align: center;">র‍্যাংক</th>
+                <th>নাম</th>
+                <th>কলেজ</th>
+                <th style="text-align: center;">নম্বর</th>
+                <th style="text-align: center;">ব্যয়কৃত সময়</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboardBody">
+            </tbody>
           </table>
         </div>
       </div>
-      
-      <div id="reviewTabContent" class="notebook-paper" style="display: none;"></div>
+
+      <div id="reviewTabContent" style="display: none; padding-bottom: 30px;">
+      </div>
     </div>
-    
+
     <div class="footer-notice">
       <span class="golden-text">Developed by Rimit</span> <br>
       <span class="golden-text">Exam Question: Made by __AUTHOR_NAME__</span>
     </div>
   </div>
+
 </body>
 </html>
   </textarea>
 
-  <!-- Builder Logic (Auto-Save Enabled) -->
+  <!-- ================================================================= -->
+  <!-- BUILDER JAVASCRIPT LOGIC                                          -->
+  <!-- ================================================================= -->
   <script>
-    // LocalStorage থেকে প্রশ্ন লোড করা, না থাকলে ডিফল্ট প্রশ্ন রাখা
+    const savedBuilderTheme = localStorage.getItem('apexBuilderTheme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedBuilderTheme);
+
+    function toggleBuilderTheme() {
+      const cur = document.documentElement.getAttribute('data-theme');
+      const next = cur === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('apexBuilderTheme', next);
+    }
+
+    // Load saved config from localStorage
+    function loadSavedConfig() {
+      const savedCfg = JSON.parse(localStorage.getItem('smart_exam_draft_config'));
+      if (!savedCfg) return;
+      if (savedCfg.title) document.getElementById('config-title').value = savedCfg.title;
+      if (savedCfg.subtitle) document.getElementById('config-subtitle').value = savedCfg.subtitle;
+      if (savedCfg.start) document.getElementById('config-start').value = savedCfg.start;
+      if (savedCfg.end) document.getElementById('config-end').value = savedCfg.end;
+      if (savedCfg.practice) document.getElementById('config-practice').value = savedCfg.practice;
+      if (savedCfg.duration) document.getElementById('config-duration').value = savedCfg.duration;
+      if (savedCfg.id) document.getElementById('config-id').value = savedCfg.id;
+      if (savedCfg.author) document.getElementById('config-author').value = savedCfg.author;
+    }
+
+    function saveConfigToLocalStorage() {
+      const cfg = {
+        title: document.getElementById('config-title').value,
+        subtitle: document.getElementById('config-subtitle').value,
+        start: document.getElementById('config-start').value,
+        end: document.getElementById('config-end').value,
+        practice: document.getElementById('config-practice').value,
+        duration: document.getElementById('config-duration').value,
+        id: document.getElementById('config-id').value,
+        author: document.getElementById('config-author').value
+      };
+      localStorage.setItem('smart_exam_draft_config', JSON.stringify(cfg));
+    }
+
     let questions = JSON.parse(localStorage.getItem('smart_exam_draft_questions')) || [
       {
-        text: "সরল ছন্দিত স্পন্দনের সমীকরণ $\\frac{d^2x}{dt^2} + 16x = 0$ হলে কণাটির কৌণিক কম্পাঙ্ক কত?",
-        optA: "$ 2\\text{ rad/s} $", optB: "$ 4\\text{ rad/s} $", optC: "$ 8\\text{ rad/s} $", optD: "$ 16\\text{ rad/s} $",
-        correct: "B", explanation: "প্রমিত সমীকরণ $\\frac{d^2x}{dt^2} + \\omega^2 x = 0$ এর সাথে তুলনা করে পাই, $ \\omega^2 = 16 \\implies \\omega = 4\\text{ rad/s} $।"
+        text: "তাপমাত্রার আন্তর্জাতিক স্কেল হিসেবে নিচের কোনটি ব্যবহৃত হয়?",
+        optA: "সেলসিয়াস স্কেল", optB: "ফারেনহাইট স্কেল", optC: "কেলভিন স্কেল", optD: "র্যাংকিন স্কেল",
+        correct: "C", explanation: "SI এককে তাপমাত্রার মৌলিক একক হলো <span class=\"highlight\">কেলভিন (K)</span>। বৈজ্ঞানিক ও আন্তর্জাতিক গবেষণায় তাপমাত্রার আন্তর্জাতিক স্কেল হিসেবে কেলভিন স্কেল ব্যবহার করা হয়।"
       }
     ];
 
-    // যেকোনো পরিবর্তনের পর লোকাল স্টোরেজে সেভ করার ফাংশন
     function saveQuestionsToLocalStorage() {
       localStorage.setItem('smart_exam_draft_questions', JSON.stringify(questions));
     }
 
-    // ড্রাফট ক্লিয়ার করার ফাংশন
     function clearDraft() {
-      if (confirm("আপনি কি নিশ্চিত যে আগের সব প্রশ্ন মুছে ফেলে নতুন প্রশ্ন তৈরি করতে চান?")) {
+      if (confirm("আপনি কি নিশ্চিত যে আগের সব প্রশ্ন মুছে ফেলে নতুন পরীক্ষা তৈরি করতে চান?")) {
         localStorage.removeItem('smart_exam_draft_questions');
         questions = [{
           text: "", optA: "", optB: "", optC: "", optD: "", correct: "A", explanation: ""
@@ -851,41 +1561,48 @@
       return numStr.toString().split('').map(n => bngDigits[n] || n).join('');
     };
 
+    function escapeAttr(str) {
+      if (!str) return "";
+      return str.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+    }
+
     function renderQuestions() {
       const container = document.getElementById('questionsContainer');
       container.innerHTML = '';
       
       questions.forEach((q, index) => {
         const qHtml = `
-          <div class="bg-white p-5 rounded-lg border border-slate-200 relative shadow-sm">
-            <button onclick="removeQuestion(${index})" class="absolute top-4 right-4 bg-red-100 text-red-600 px-3 py-1 rounded text-sm font-bold hover:bg-red-200">ডিলিট</button>
-            <h3 class="font-bold text-blue-700 mb-3">প্রশ্ন ${toBngNum(index + 1)}</h3>
-            
-            <div class="mb-4">
-              <label class="block text-sm font-bold mb-1">প্রশ্ন (Math হলে $ $ ব্যবহার করুন)</label>
-              <textarea rows="2" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" oninput="updateQuestion(${index}, 'text', this.value)">${q.text}</textarea>
+          <div class="q-builder-card">
+            <div class="q-header">
+              <span class="q-number">প্রশ্ন ${toBngNum(index + 1)}</span>
+              <button onclick="removeQuestion(${index})" class="btn-delete-q">ডিলিট 🗑️</button>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-              <div><label class="block text-xs font-bold mb-1">অপশন (ক)</label><input type="text" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" value="${q.optA}" oninput="updateQuestion(${index}, 'optA', this.value)"></div>
-              <div><label class="block text-xs font-bold mb-1">অপশন (খ)</label><input type="text" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" value="${q.optB}" oninput="updateQuestion(${index}, 'optB', this.value)"></div>
-              <div><label class="block text-xs font-bold mb-1">অপশন (গ)</label><input type="text" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" value="${q.optC}" oninput="updateQuestion(${index}, 'optC', this.value)"></div>
-              <div><label class="block text-xs font-bold mb-1">অপশন (ঘ)</label><input type="text" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" value="${q.optD}" oninput="updateQuestion(${index}, 'optD', this.value)"></div>
+            <div style="margin-bottom: 14px;">
+              <label class="field-label">প্রশ্ন (Math হলে $ $ বা \\( \\) ব্যবহার করুন)</label>
+              <textarea rows="2" class="field-input" oninput="updateQuestion(${index}, 'text', this.value)">${q.text}</textarea>
+            </div>
+            
+            <div class="grid-2" style="margin-bottom: 14px;">
+              <div><label class="field-label">অপশন (A)</label><input type="text" class="field-input" value="${escapeAttr(q.optA)}" oninput="updateQuestion(${index}, 'optA', this.value)"></div>
+              <div><label class="field-label">অপশন (B)</label><input type="text" class="field-input" value="${escapeAttr(q.optB)}" oninput="updateQuestion(${index}, 'optB', this.value)"></div>
+              <div><label class="field-label">অপশন (C)</label><input type="text" class="field-input" value="${escapeAttr(q.optC)}" oninput="updateQuestion(${index}, 'optC', this.value)"></div>
+              <div><label class="field-label">অপশন (D)</label><input type="text" class="field-input" value="${escapeAttr(q.optD)}" oninput="updateQuestion(${index}, 'optD', this.value)"></div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid-3">
               <div>
-                <label class="block text-sm font-bold text-emerald-700 mb-1">সঠিক উত্তর</label>
-                <select class="w-full p-2 border-2 border-emerald-300 rounded font-bold outline-none" onchange="updateQuestion(${index}, 'correct', this.value)">
-                  <option value="A" ${q.correct === 'A' ? 'selected' : ''}>অপশন (ক)</option>
-                  <option value="B" ${q.correct === 'B' ? 'selected' : ''}>অপশন (খ)</option>
-                  <option value="C" ${q.correct === 'C' ? 'selected' : ''}>অপশন (গ)</option>
-                  <option value="D" ${q.correct === 'D' ? 'selected' : ''}>অপশন (ঘ)</option>
+                <label class="field-label" style="color: var(--success-color);">সঠিক উত্তর (A / B / C / D)</label>
+                <select class="field-input" style="font-weight: 700;" onchange="updateQuestion(${index}, 'correct', this.value)">
+                  <option value="A" ${q.correct === 'A' ? 'selected' : ''}>A</option>
+                  <option value="B" ${q.correct === 'B' ? 'selected' : ''}>B</option>
+                  <option value="C" ${q.correct === 'C' ? 'selected' : ''}>C</option>
+                  <option value="D" ${q.correct === 'D' ? 'selected' : ''}>D</option>
                 </select>
               </div>
-              <div class="md:col-span-2">
-                <label class="block text-sm font-bold text-blue-700 mb-1">ব্যাখ্যা (Optional)</label>
-                <textarea rows="1" class="w-full p-2 border rounded text-sm outline-none focus:ring-1 focus:ring-blue-500" oninput="updateQuestion(${index}, 'explanation', this.value)">${q.explanation}</textarea>
+              <div style="grid-column: span 2;">
+                <label class="field-label">ব্যাখ্যা (Explanation)</label>
+                <textarea rows="1" class="field-input" oninput="updateQuestion(${index}, 'explanation', this.value)">${q.explanation}</textarea>
               </div>
             </div>
           </div>
@@ -911,99 +1628,94 @@
       saveQuestionsToLocalStorage();
     }
 
+    const formatBanglaDate = (dateTimeStr) => {
+      if (!dateTimeStr) return "নির্ধারিত সময়ে";
+      const date = new Date(dateTimeStr);
+      const months = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
+      
+      const day = toBngNum(date.getDate());
+      const month = months[date.getMonth()];
+      const year = toBngNum(date.getFullYear());
+      
+      let hours = date.getHours();
+      const minutes = toBngNum(date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+      
+      let period = 'রাত';
+      if(hours >= 5 && hours < 12) period = 'সকাল';
+      else if(hours >= 12 && hours < 16) period = 'দুপুর';
+      else if(hours >= 16 && hours < 18) period = 'বিকাল';
+      else if(hours >= 18 && hours < 20) period = 'সন্ধ্যা';
+
+      hours = hours % 12;
+      hours = hours ? hours : 12; 
+      const bngHours = toBngNum(hours);
+
+      return `${day} ${month} ${year}, ${period} ${bngHours}:${minutes} টায়`;
+    };
+
     function generateCode() {
       const correctAnswersObj = {};
       let questionsHTML = "";
 
       questions.forEach((q, idx) => {
         const qNum = idx + 1;
-        const bngQNum = toBngNum(qNum < 10 ? `0${qNum}` : qNum);
+        const bngQNum = toBngNum(qNum);
         const qId = `q${qNum}`;
         
         correctAnswersObj[qId] = q.correct;
-        const correctText = q.correct === 'A' ? '(ক)' : q.correct === 'B' ? '(খ)' : q.correct === 'C' ? '(গ)' : '(ঘ)';
         
         questionsHTML += `
           <div class="mcq-card" id="qCard-${qNum}">
-            <div class="question-title">${bngQNum}. ${q.text}</div>
+            <div class="question-header-row">
+              <div class="question-title"><span class="q-serial-num">${bngQNum}.</span> ${q.text}</div>
+              <span class="omr-status-badge">🔒 OMR লকড</span>
+            </div>
             <div class="options-grid">
-              <label class="option-label"><input type="radio" name="${qId}" value="A"> (ক) ${q.optA}</label>
-              <label class="option-label"><input type="radio" name="${qId}" value="B"> (খ) ${q.optB}</label>
-              <label class="option-label"><input type="radio" name="${qId}" value="C"> (গ) ${q.optC}</label>
-              <label class="option-label"><input type="radio" name="${qId}" value="D"> (ঘ) ${q.optD}</label>
+              <label class="option-label"><input type="radio" name="${qId}" value="A"> ${q.optA}</label>
+              <label class="option-label"><input type="radio" name="${qId}" value="B"> ${q.optB}</label>
+              <label class="option-label"><input type="radio" name="${qId}" value="C"> ${q.optC}</label>
+              <label class="option-label"><input type="radio" name="${qId}" value="D"> ${q.optD}</label>
             </div>
-            <div class="solution-notes">
-              <h4>ব্যাখ্যা ও সমাধান:</h4>
-              • <span class="blue-heading">সঠিক উত্তর:</span> <span class="highlight">${correctText}</span><br/> ${q.explanation}
-            </div>
-          </div>
-        `;
+            <div class="solution-notes">${q.explanation || 'কোনো ব্যাখ্যা দেওয়া হয়নি।'}</div>
+          </div>\n`;
       });
 
       const startVal = document.getElementById('config-start').value;
       const endVal = document.getElementById('config-end').value;
+      const practiceVal = document.getElementById('config-practice').value;
 
       const startTimestampString = startVal ? startVal + ":00+06:00" : "";
       const endTimestampString = endVal ? endVal + ":00+06:00" : "";
+      const practiceTimestampString = practiceVal ? practiceVal + ":00+06:00" : (endVal ? endVal + ":00+06:00" : "");
       
-      const durationVal = document.getElementById('config-duration').value;
-      const durationSec = durationVal * 60;
+      const durationVal = document.getElementById('config-duration').value || "25";
       const totalQs = questions.length;
+      const bngTotalQs = toBngNum(totalQs);
 
-      const formatBanglaDate = (dateTimeStr) => {
-        if (!dateTimeStr) return "অনির্ধারিত";
-        const date = new Date(dateTimeStr);
-        const months = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
-        
-        const day = toBngNum(date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
-        const month = months[date.getMonth()];
-        const year = toBngNum(date.getFullYear());
-        
-        let hours = date.getHours();
-        const minutes = toBngNum(date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
-        
-        let period = 'রাত';
-        if(hours >= 5 && hours < 12) period = 'সকাল';
-        else if(hours >= 12 && hours < 16) period = 'দুপুর';
-        else if(hours >= 16 && hours < 18) period = 'বিকাল';
-        else if(hours >= 18 && hours < 20) period = 'সন্ধ্যা';
-
-        hours = hours % 12;
-        hours = hours ? hours : 12; 
-        const bngHours = toBngNum(hours);
-
-        return `${day} ${month} ${year}, ${period} ${bngHours}:${minutes} টা`;
-      };
-
-      let scheduleHTML = `
-        <div class="schedule-box">
-          <div>📅 পরীক্ষার সময়সূচি:</div>
-          • <strong>পরীক্ষা শুরু:</strong> ${formatBanglaDate(startVal)}<br>
-          • <strong>পরীক্ষা শেষ:</strong> ${endVal ? formatBanglaDate(endVal) : "অনির্ধারিত"}<br>
-          • <strong>সময়সীমা:</strong> ${toBngNum(durationVal)} মিনিট (${toBngNum(totalQs)}টি প্রশ্ন)
-        </div>`;
-
-      let finalHtml = document.getElementById('rawTemplate').value;
+      let finalHtml = document.getElementById('rawTemplate').value.trim();
       
       finalHtml = finalHtml.replace(/__PAGE_TITLE__/g, document.getElementById('config-title').value);
       finalHtml = finalHtml.replace(/__PAGE_SUBTITLE__/g, document.getElementById('config-subtitle').value);
-      finalHtml = finalHtml.replace(/__DURATION_SEC__/g, durationSec);
       finalHtml = finalHtml.replace(/__DURATION_MIN__/g, durationVal);
       
       finalHtml = finalHtml.replace(/__START_TIME__/g, startTimestampString);
       finalHtml = finalHtml.replace(/__END_TIME_TIMESTAMP__/g, endTimestampString);
+      finalHtml = finalHtml.replace(/__PRACTICE_TIME_TIMESTAMP__/g, practiceTimestampString);
       
-      finalHtml = finalHtml.replace(/__SCHEDULE_BOX_HTML__/g, scheduleHTML);
-      finalHtml = finalHtml.replace(/__AUTHOR_NAME__/g, document.getElementById('config-author').value || "Unknown");
+      finalHtml = finalHtml.replace(/__FORMATTED_START_TIME__/g, formatBanglaDate(startVal));
+      finalHtml = finalHtml.replace(/__FORMATTED_PRACTICE_TIME__/g, formatBanglaDate(practiceVal));
+      
+      finalHtml = finalHtml.replace(/__AUTHOR_NAME__/g, document.getElementById('config-author').value || "Rimit");
       finalHtml = finalHtml.replace(/__TOTAL_QS__/g, totalQs);
+      finalHtml = finalHtml.replace(/__BNG_TOTAL_QS__/g, bngTotalQs);
       finalHtml = finalHtml.replace(/__EXAM_ID__/g, document.getElementById('config-id').value);
       finalHtml = finalHtml.replace(/__CORRECT_ANSWERS_JSON__/g, JSON.stringify(correctAnswersObj));
-      finalHtml = finalHtml.replace(/__QUESTIONS_HTML__/g, questionsHTML);
+      finalHtml = finalHtml.replace(/__QUESTIONS_HTML__/g, questionsHTML.trimEnd());
 
       document.getElementById('generatedCode').value = finalHtml;
-      document.getElementById('outputArea').classList.remove('hidden');
+      document.getElementById('outputArea').style.display = 'block';
       document.getElementById('outputArea').scrollIntoView({ behavior: 'smooth' });
-      document.getElementById('copyBtn').innerText = "কোড কপি করুন";
+      document.getElementById('copyBtn').innerText = "📋 কোড কপি করুন";
     }
 
     function copyCode() {
@@ -1011,10 +1723,25 @@
       copyText.select();
       document.execCommand("copy");
       document.getElementById('copyBtn').innerText = "কপি হয়েছে! ✅";
-      setTimeout(() => { document.getElementById('copyBtn').innerText = "কোড কপি করুন"; }, 2500);
+      setTimeout(() => { document.getElementById('copyBtn').innerText = "📋 কোড কপি করুন"; }, 2500);
     }
 
+    function downloadHTML() {
+      const code = document.getElementById("generatedCode").value;
+      const examId = document.getElementById("config-id").value || "exam";
+      const blob = new Blob([code], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${examId}.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    loadSavedConfig();
     renderQuestions();
   </script>
 </body>
-</html>
+  </html>
