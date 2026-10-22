@@ -1729,7 +1729,7 @@ __QUESTIONS_HTML__
     function downloadHTML() {
       const code = document.getElementById("generatedCode").value;
       const examId = document.getElementById("config-id").value || "exam";
-      const blob = new Blob([code], { type: "index.html;charset=utf-8" });
+      const blob = new Blob([code], { type: "text/html;charset=utf-8" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
